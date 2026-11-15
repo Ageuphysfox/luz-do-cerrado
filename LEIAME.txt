@@ -7,6 +7,11 @@ COMO ABRIR NA FEIRA
 3. Escolha "Jogar sozinho" ou "Jogar em dupla". Aparece o QR (um por jogador).
 4. O visitante aponta a câmera, escreve o nome e responde pelo celular.
 
+PLATEIA
+Quem está assistindo lê o QR pequeno ("Plateia, jogue junto"), responde as mesmas
+perguntas no celular (sem valer placar) e manda reações que sobem no telão.
+O telão mostra quantos estão na plateia e quantos por cento acertaram.
+
 IMPORTANTE: o placar fica guardado NESTE navegador deste notebook.
 Use sempre o mesmo notebook, o mesmo Chrome e o mesmo endereço o dia todo.
 Não use janela anônima e não limpe o histórico.
@@ -33,8 +38,6 @@ e mais 200 a partir de 3 acertos seguidos. Empate: ganha o menor tempo.
 Depois de mudar qualquer arquivo, é preciso publicar de novo no GitHub.
 
 FOTOS (Wikimedia Commons)
-abertura: Ana Cláudia Matias A. Capistrano, CC BY-SA 4.0
-jalapao e cachoeira: Marcel Favery, CC BY-SA 4.0
-bananal (rio Javaés): Arthur to, domínio público
-palmas (Praia da Graciosa): Anurb01, CC BY-SA 4.0
-noite (Via Láctea sobre Corumbá): Paulomelo.adv, CC BY-SA 4.0
+As paisagens das cinco paradas e as 29 fotos de animais e fenômenos têm o crédito
+mostrado no canto do telão. A lista completa de autores e licenças está em imagens.js
+e no começo de index.html (ETAPAS e ABERTURA).
