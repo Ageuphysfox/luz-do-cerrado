@@ -7,10 +7,12 @@ COMO ABRIR NA FEIRA
 3. Escolha "Jogar sozinho" ou "Jogar em dupla". Aparece o QR (um por jogador).
 4. O visitante aponta a câmera, escreve o nome e responde pelo celular.
 
-PLATEIA
-Quem está assistindo lê o QR pequeno ("Plateia, jogue junto"), responde as mesmas
-perguntas no celular (sem valer placar) e manda reações que sobem no telão.
-O telão mostra quantos estão na plateia e quantos por cento acertaram.
+O TELÃO É O ESPETÁCULO
+Enquanto ninguém joga, o telão mostra um mural de fotos em movimento e, de tempos
+em tempos, um "desafio relâmpago": uma foto escondida (lanterna, zoom ou mosaico)
+para quem está passando adivinhar em voz alta. Chame o público para tentar!
+Cada partida tem 10 rodadas: 6 perguntas, 3 desafios de foto e a pergunta do tesouro.
+Plateia pelo celular é opcional: a tecla P mostra ou esconde o QR pequeno da plateia.
 
 IMPORTANTE: o placar fica guardado NESTE navegador deste notebook.
 Use sempre o mesmo notebook, o mesmo Chrome e o mesmo endereço o dia todo.
@@ -21,6 +23,8 @@ TECLAS DO TELÃO
 T ............ (na tela do QR) jogar no teclado, sem celular
                jogador 1: teclas 1 2 3 4 = A B C D     jogador 2: teclas 7 8 9 0
 Enter ........ pula o "Você sabia?"
+P ............ mostra/esconde o QR da plateia
+C ............ créditos das fotos
 Esc .......... volta ao início
 L ............ placar completo (clique num nome para apagar; E exporta planilha;
                Shift+Delete apaga tudo; faça isso antes de a feira começar)
@@ -32,12 +36,14 @@ Atenção: aberto assim, o placar é outro (não junta com o do endereço da int
 
 PERGUNTAS
 Estão em perguntas.js (114 perguntas: fáceis, médias, difíceis e as do tesouro).
-Cada partida tem 10: 3 fáceis, 4 médias, 2 difíceis e 1 do tesouro (vale o dobro).
-Pontos: fácil 500, média 700, difícil 900, mais até 400 pela rapidez
-e mais 200 a partir de 3 acertos seguidos. Empate: ganha o menor tempo.
+Cada partida sorteia 2 fáceis, 2 médias, 2 difíceis e 1 do tesouro (vale o dobro),
+mais 3 desafios de foto (as fotos e curiosidades ficam na lista FOTOS do index.html).
+Pontos: fácil 500, média 700, difícil 900, desafio de foto 700; mais até 400 pela
+rapidez (até 800 nos desafios de foto) e mais 200 a partir de 3 acertos seguidos.
+Empate: ganha o menor tempo.
 Depois de mudar qualquer arquivo, é preciso publicar de novo no GitHub.
 
 FOTOS (Wikimedia Commons)
 As paisagens das cinco paradas e as 29 fotos de animais e fenômenos têm o crédito
-mostrado no canto do telão. A lista completa de autores e licenças está em imagens.js
-e no começo de index.html (ETAPAS e ABERTURA).
+mostrado no canto do telão. A lista completa aparece na tecla C e está em imagens.js
+e no começo de index.html (ETAPAS).

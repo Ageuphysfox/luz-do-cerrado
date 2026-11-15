@@ -7,26 +7,38 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Figtree:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-:root { --noite: #15100a; --ouro: #f0b63c; --brilho: #ffe9a8; --areia: #f6ead2; --vereda: #3fa877; --barro: #d9512f; }
+:root { --noite: #15100a; --ouro: #f0b63c; --brilho: #ffe9a8; --areia: #f6ead2; --vereda: #3fa877; --barro: #d9512f; --ceu: #7fd0e8; }
 * { box-sizing: border-box; margin: 0; }
 html { font-size: min(1vw, 1.78vh); }
 body { background: var(--noite); color: var(--areia); font-family: Figtree, "Segoe UI", sans-serif; overflow: hidden; height: 100vh; cursor: default; user-select: none; }
 .titulo, .perg, .nomeEtapa, .num { font-family: Fraunces, Georgia, serif; }
 .bg { position: fixed; inset: -4%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.6s ease; animation: passeio 46s ease-in-out infinite alternate; }
 .bg.on { opacity: 1; }
+body.mural .bg { opacity: 0; }
 @keyframes passeio { from { transform: scale(1.02) translate(-1%, .6%); } to { transform: scale(1.13) translate(1.4%, -1%); } }
-#motes { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+#motes { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4; }
 #veu { position: fixed; inset: 0; background: linear-gradient(180deg, rgba(21,16,10,.55) 0%, rgba(21,16,10,.12) 26%, rgba(21,16,10,.5) 58%, rgba(21,16,10,.93) 100%); transition: background 1s; }
 body.forte #veu { background: linear-gradient(180deg, rgba(21,16,10,.74) 0%, rgba(21,16,10,.62) 40%, rgba(21,16,10,.93) 100%); }
-#fio { position: fixed; left: 0; top: 0; height: .55rem; width: 100%; transform-origin: left; background: linear-gradient(90deg, var(--ouro), var(--brilho)); box-shadow: 0 0 1.6rem .3rem rgba(255,214,120,.75); opacity: 0; transition: opacity .4s; }
+body.mural #veu { background: linear-gradient(90deg, rgba(21,16,10,.93) 0%, rgba(21,16,10,.72) 38%, rgba(21,16,10,.3) 70%, rgba(21,16,10,.5) 100%); }
+body.mural.forte #veu { background: rgba(21,16,10,.84); }
+#fio { position: fixed; left: 0; top: 0; height: .55rem; width: 100%; transform-origin: left; background: linear-gradient(90deg, var(--ouro), var(--brilho)); box-shadow: 0 0 1.6rem .3rem rgba(255,214,120,.75); opacity: 0; transition: opacity .4s; z-index: 3; }
 #fio.on { opacity: 1; }
 #fio.fim { background: var(--barro); box-shadow: 0 0 1.6rem .3rem rgba(217,81,47,.8); }
-#tela { position: fixed; inset: 0; padding: 4rem 5rem 3.4rem; display: flex; flex-direction: column; }
-#credito { position: fixed; right: 1.2rem; bottom: .7rem; font-size: .95rem; opacity: .6; text-shadow: 0 1px 3px #000; }
-#rede { position: fixed; left: 1.2rem; bottom: .7rem; font-size: .95rem; opacity: .7; text-shadow: 0 1px 3px #000; }
+#tela { position: fixed; inset: 0; padding: 4rem 5rem 3.4rem; display: flex; flex-direction: column; z-index: 2; }
+#credito { position: fixed; right: 1.2rem; bottom: .7rem; font-size: .95rem; opacity: .6; text-shadow: 0 1px 3px #000; z-index: 3; }
+#rede { position: fixed; left: 1.2rem; bottom: .7rem; font-size: .95rem; opacity: .7; text-shadow: 0 1px 3px #000; z-index: 3; }
 .sombra { text-shadow: 0 .15rem 1.2rem rgba(0,0,0,.75), 0 0 .2rem rgba(0,0,0,.6); }
 button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
 button:focus-visible { outline: .25rem solid var(--brilho); outline-offset: .3rem; }
+
+/* mural de fotos em movimento (abertura) */
+#mural { position: fixed; inset: -20% -12%; display: flex; flex-direction: column; justify-content: center; transform: rotate(-5deg); opacity: 0; transition: opacity 1.2s; }
+body.mural #mural { opacity: 1; }
+.fita { display: flex; width: max-content; margin: .7rem 0; animation: corre 110s linear infinite; }
+.fita.r { animation-direction: reverse; animation-duration: 135s; }
+@keyframes corre { to { transform: translateX(-50%); } }
+.cartao { flex: none; width: 27rem; height: 17rem; margin-right: 1.4rem; border-radius: 1.2rem; background-size: cover; background-position: center; position: relative; box-shadow: 0 .6rem 2rem rgba(0,0,0,.5); overflow: hidden; }
+.cartao span { position: absolute; left: 0; right: 0; bottom: 0; padding: 2.2rem 1rem .7rem; font-weight: 800; font-size: 1.3rem; background: linear-gradient(180deg, rgba(21,16,10,0), rgba(21,16,10,.85)); }
 
 /* abertura */
 .abertura { flex: 1; display: grid; grid-template-columns: 1fr 34rem; gap: 5rem; align-items: end; }
@@ -34,13 +46,16 @@ button:focus-visible { outline: .25rem solid var(--brilho); outline-offset: .3re
 .titulo span { display: block; color: var(--ouro); font-weight: 500; font-style: italic; }
 .chamada { font-size: 2.1rem; max-width: 40rem; margin: 2rem 0 2.6rem; line-height: 1.3; }
 .modos { display: flex; gap: 1.4rem; }
-.modo { background: var(--ouro); color: var(--noite); font-weight: 800; font-size: 2.1rem; padding: 1.3rem 2.4rem; border-radius: 5rem; box-shadow: 0 0 2.6rem rgba(240,182,60,.5); transition: transform .15s; }
-.modo.b { background: rgba(21,16,10,.55); color: var(--areia); box-shadow: inset 0 0 0 .2rem var(--ouro); backdrop-filter: blur(6px); }
+.modo { background: var(--ouro); color: var(--noite); font-weight: 800; font-size: 2.1rem; padding: 1.3rem 2.4rem; border-radius: 5rem; box-shadow: 0 0 2.6rem rgba(240,182,60,.5); transition: transform .15s; animation: chama 2.4s ease-in-out infinite; }
+.modo.b { background: rgba(21,16,10,.55); color: var(--areia); box-shadow: inset 0 0 0 .2rem var(--ouro); backdrop-filter: blur(6px); animation: none; }
 .modo:hover { transform: translateY(-.25rem); }
 .modo small { display: block; font-size: 1.05rem; font-weight: 600; opacity: .75; }
+@keyframes chama { 50% { box-shadow: 0 0 4.4rem rgba(255,214,120,.95); } }
+.modos.peq .modo { font-size: 1.5rem; padding: .9rem 1.7rem; }
+.modos.peq .modo small { font-size: .9rem; }
 
 /* placar */
-.placar { background: rgba(21,16,10,.66); backdrop-filter: blur(10px); border-radius: 1.6rem; padding: 1.8rem 2rem; border-top: .3rem solid var(--ouro); }
+.placar { background: rgba(21,16,10,.74); backdrop-filter: blur(10px); border-radius: 1.6rem; padding: 1.8rem 2rem; border-top: .3rem solid var(--ouro); }
 .placar h2 { font-family: Fraunces, Georgia, serif; font-size: 2.3rem; font-weight: 700; margin-bottom: .2rem; }
 .placar .sub { font-size: 1.15rem; opacity: .7; margin-bottom: 1rem; }
 .lin { display: grid; grid-template-columns: 2.6rem 1fr auto 6.2rem; gap: .8rem; align-items: baseline; padding: .5rem .6rem; font-size: 1.65rem; border-radius: .6rem; }
@@ -52,6 +67,8 @@ button:focus-visible { outline: .25rem solid var(--brilho); outline-offset: .3re
 .lin.um .pos, .lin.um .pt { color: var(--ouro); opacity: 1; }
 .lin.eu { background: rgba(240,182,60,.22); box-shadow: inset 0 0 0 .12rem var(--ouro); }
 .vazio { font-size: 1.5rem; opacity: .75; padding: 1.2rem 0; line-height: 1.35; }
+.entra .placar .lin { animation: sobe .5s ease-out both; }
+.entra .placar .lin:nth-child(n+4) { animation-delay: .1s; } .entra .placar .lin:nth-child(n+6) { animation-delay: .2s; } .entra .placar .lin:nth-child(n+8) { animation-delay: .3s; }
 
 /* entrada (QR) */
 .entrada { flex: 1; display: grid; gap: 0; align-items: center; }
@@ -60,7 +77,7 @@ button:focus-visible { outline: .25rem solid var(--brilho); outline-offset: .3re
 .entrada.dupla .lado + .lado { border-left: .15rem solid rgba(246,234,210,.3); }
 .lado h2 { font-family: Fraunces, Georgia, serif; font-size: 3.6rem; font-weight: 700; }
 .lado p { font-size: 1.7rem; margin: .5rem 0 1.6rem; max-width: 30rem; line-height: 1.3; }
-.qr { background: #fff; padding: 1.2rem; border-radius: 1.6rem; width: 25rem; height: 25rem; box-shadow: 0 0 4rem rgba(255,233,168,.45); }
+.qr { background: #fff; padding: 1.2rem; border-radius: 1.6rem; width: 25rem; height: 25rem; box-shadow: 0 0 4rem rgba(255,233,168,.45); animation: chama 2.4s ease-in-out infinite; }
 .qr svg { width: 100%; height: 100%; display: block; }
 .chegou { width: 25rem; height: 25rem; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(255,233,168,.95), rgba(240,182,60,.85) 55%, rgba(240,182,60,0) 72%); color: var(--noite); animation: acende .7s ease-out; }
 .chegou b { font-family: Fraunces, Georgia, serif; font-size: 3.3rem; max-width: 17rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -68,26 +85,38 @@ button:focus-visible { outline: .25rem solid var(--brilho); outline-offset: .3re
 @keyframes acende { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .rodape { text-align: center; font-size: 1.35rem; opacity: .85; }
 .conta { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; font-family: Fraunces, Georgia, serif; font-size: 30rem; font-weight: 700; color: var(--brilho); text-shadow: 0 0 6rem rgba(240,182,60,.9); }
-.conta span { animation: acende 1s ease-out; }
+.conta span { animation: bum 1s ease-out; }
+@keyframes bum { 0% { transform: scale(2.6); opacity: 0; } 35% { transform: scale(.9); opacity: 1; } 100% { transform: scale(1); } }
 
-/* etapa */
+/* etapa e chamada dos desafios */
 .etapa { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
-.etapa .n { font-size: 2rem; font-weight: 600; color: var(--ouro); }
-.nomeEtapa { font-size: 8.4rem; line-height: 1; font-weight: 700; color: #fff; max-width: 70rem; animation: sobe 1s ease-out; }
-.etapa .bl { font-size: 2.3rem; margin-top: 1.2rem; }
+.etapa .n { font-size: 2rem; font-weight: 600; color: var(--ouro); animation: sobe .5s ease-out both; }
+.nomeEtapa { font-size: 8.4rem; line-height: 1; font-weight: 700; color: #fff; max-width: 78rem; }
+.etapa .bl { font-size: 2.3rem; margin-top: 1.2rem; max-width: 60rem; line-height: 1.3; animation: sobe .7s .7s ease-out both; }
+.etapa.des { justify-content: center; align-items: center; text-align: center; }
+.etapa.des .nomeEtapa { color: var(--ouro); font-size: 9.6rem; text-shadow: 0 0 5rem rgba(240,182,60,.55), 0 .2rem 1.4rem rgba(0,0,0,.8); }
+.pal { display: inline-block; white-space: nowrap; }
+.lt { display: inline-block; animation: letra .55s cubic-bezier(.2,1.5,.4,1) both; }
+@keyframes letra { from { transform: translateY(1.1em) rotate(12deg) scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes sobe { from { transform: translateY(2.5rem); opacity: 0; } to { transform: none; opacity: 1; } }
 
 /* pergunta */
 .topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; }
-.onde { font-size: 1.6rem; font-weight: 600; }
+.onde { font-size: 1.6rem; font-weight: 600; min-width: 22rem; }
 .onde b { color: var(--ouro); }
 .jogs { display: flex; gap: 1.2rem; }
-.jog { min-width: 17rem; background: rgba(21,16,10,.66); backdrop-filter: blur(10px); border-radius: 1.2rem; padding: .9rem 1.3rem; border-left: .45rem solid var(--ouro); position: relative; }
-.jog.dois { border-left-color: #7fd0e8; }
+.jog { min-width: 17rem; background: rgba(21,16,10,.72); backdrop-filter: blur(10px); border-radius: 1.2rem; padding: .9rem 1.3rem; border-left: .45rem solid var(--ouro); position: relative; }
+.jog.dois { border-left-color: var(--ceu); }
 .jog .nm { font-size: 1.5rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 16rem; }
 .jog .num { font-size: 2.9rem; font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums; }
 .jog .st { font-size: 1.15rem; opacity: .8; }
 .jog.foi .st { color: var(--brilho); opacity: 1; font-weight: 600; }
+.jog.agora { animation: trava .6s ease-out; }
+@keyframes trava { 0% { transform: scale(1.14); box-shadow: 0 0 4rem var(--brilho); background: rgba(240,182,60,.6); } 100% { transform: none; } }
+.jog.fogo { box-shadow: 0 0 0 .15rem var(--ouro), 0 0 2.6rem rgba(240,120,40,.8); animation: fogo 1s ease-in-out infinite alternate; }
+@keyframes fogo { to { box-shadow: 0 0 0 .15rem var(--brilho), 0 0 4.2rem rgba(255,170,60,1); } }
+.jog.pulso { animation: pulso .7s ease-out; }
+@keyframes pulso { 0% { transform: scale(1.18); background: rgba(240,182,60,.7); } 100% { transform: none; } }
 .jog .ganho { position: absolute; right: 1rem; top: .8rem; font-size: 1.7rem; font-weight: 800; color: var(--vereda); animation: sobe .5s ease-out; }
 .jog .ganho.zero { color: var(--barro); }
 .corpo { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
@@ -95,26 +124,79 @@ button:focus-visible { outline: .25rem solid var(--brilho); outline-offset: .3re
 .tes.n2 { box-shadow: inset 0 0 0 .15rem var(--ouro); } .tes.n3 { box-shadow: inset 0 0 0 .15rem var(--barro); } .tes.t { background: var(--ouro); color: var(--noite); box-shadow: 0 0 2rem rgba(240,182,60,.7); }
 .perg { font-size: 4.2rem; line-height: 1.12; font-weight: 500; color: #fff; max-width: 76rem; margin-bottom: 2rem; }
 .ops { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.4rem; }
-.op { display: flex; align-items: center; gap: 1.2rem; background: rgba(21,16,10,.7); backdrop-filter: blur(10px); border-radius: 1.1rem; padding: 1rem 1.4rem; font-size: 2.05rem; font-weight: 600; line-height: 1.18; min-height: 5.6rem; transition: opacity .5s, background .5s, color .5s; }
+.op { display: flex; align-items: center; gap: 1.2rem; background: rgba(21,16,10,.74); backdrop-filter: blur(10px); border-radius: 1.1rem; padding: 1rem 1.4rem; font-size: 2.05rem; font-weight: 600; line-height: 1.18; min-height: 5.6rem; transition: opacity .5s, background .5s, color .5s; }
 .op i { flex: none; width: 3.4rem; height: 3.4rem; border-radius: 50%; background: var(--areia); color: var(--noite); font-style: normal; font-weight: 800; display: flex; align-items: center; justify-content: center; }
 .op.certa { background: var(--ouro); color: var(--noite); box-shadow: 0 0 3rem rgba(240,182,60,.7); }
 .op.certa i { background: var(--noite); color: var(--brilho); }
-.op.fora { opacity: .32; }
+.op.fora { opacity: .3; animation: cai2 .6s ease-in both; }
+@keyframes cai2 { from { opacity: 1; transform: none; } to { opacity: .3; transform: scale(.96); } }
+.op.susp { animation: susp .36s ease-in-out infinite alternate; }
+.op.susp:nth-child(2) { animation-delay: .09s; } .op.susp:nth-child(3) { animation-delay: .18s; } .op.susp:nth-child(4) { animation-delay: .27s; }
+@keyframes susp { to { background: rgba(240,182,60,.5); transform: scale(1.02); } }
+.op u { margin-left: auto; text-decoration: none; font-size: 1.2rem; font-weight: 800; padding: .25rem .8rem; border-radius: 2rem; background: var(--noite); color: var(--ouro); white-space: nowrap; animation: acende .4s ease-out; }
+.op u + u { margin-left: .4rem; } .op u.d { color: var(--ceu); }
 .sabia { margin-top: 1.4rem; font-size: 1.95rem; line-height: 1.32; max-width: 82rem; padding-left: 1.4rem; border-left: .35rem solid var(--ouro); animation: sobe .6s ease-out; }
 .sabia b { color: var(--ouro); }
-.seg { font-family: Fraunces, Georgia, serif; font-size: 3.4rem; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 5rem; text-align: center; }
+.relo { position: relative; width: 8.4rem; height: 8.4rem; flex: none; }
+.relo svg { width: 100%; height: 100%; transform: rotate(-90deg); display: block; }
+.relo circle { fill: rgba(21,16,10,.6); stroke: rgba(246,234,210,.2); stroke-width: 7; }
+.relo #arco { fill: none; stroke: var(--ouro); stroke-linecap: round; filter: drop-shadow(0 0 .5rem var(--ouro)); }
+.relo b { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: Fraunces, Georgia, serif; font-size: 3.6rem; font-variant-numeric: tabular-nums; }
+body.urg .relo #arco { stroke: var(--barro); filter: drop-shadow(0 0 .7rem var(--barro)); }
+body.urg .relo b { color: #ffb39e; animation: bate .5s ease-in-out infinite alternate; }
+@keyframes bate { to { transform: scale(1.22); } }
+#alerta { position: fixed; inset: 0; pointer-events: none; box-shadow: inset 0 0 11rem 2rem rgba(217,81,47,.75); opacity: 0; transition: opacity .4s; z-index: 3; }
+body.urg #alerta { opacity: 1; animation: alerta .5s ease-in-out infinite alternate; }
+@keyframes alerta { to { opacity: .45; } }
+#clarao { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(circle, rgba(255,240,190,.95), rgba(240,182,60,.5)); opacity: 0; z-index: 6; }
+#clarao.on { animation: clarao .7s ease-out; }
+#clarao.ruim { background: rgba(217,81,47,.6); }
+@keyframes clarao { from { opacity: .85; } to { opacity: 0; } }
+#tela.tremer { animation: tremer .45s linear; }
+@keyframes tremer { 20% { transform: translateX(-1.1rem); } 40% { transform: translateX(1rem); } 60% { transform: translateX(-.7rem); } 80% { transform: translateX(.5rem); } }
+
+/* desafios de foto: lanterna, zoom e mosaico */
+.corpo.foto { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 3rem; }
+#palco { position: relative; flex: none; width: 54rem; height: 35rem; border-radius: 1.6rem; overflow: hidden; background: #060402; box-shadow: 0 0 0 .2rem rgba(240,182,60,.5), 0 1rem 4rem rgba(0,0,0,.7); }
+#palco.g { width: 58rem; height: 38rem; }
+#pimg { position: absolute; inset: 0; background-size: cover; background-position: center; will-change: transform; }
+#pesc { position: absolute; inset: 0; }
+#pesc.mos { display: grid; grid-template-columns: repeat(10, 1fr); grid-template-rows: repeat(6, 1fr); }
+.mz { background: #1b140c; box-shadow: inset 0 0 0 1px rgba(240,182,60,.28); transition: transform .7s cubic-bezier(.5,-.4,.7,1), opacity .7s; }
+.mz:nth-child(odd) { background: #241a0e; }
+.mz.x { transform: scale(0) rotate(50deg); opacity: 0; }
+#palco.rev #pesc { animation: some .7s ease-out forwards; }
+#palco.rev #pimg { animation: abre .9s ease-out; }
+@keyframes some { to { opacity: 0; } }
+@keyframes abre { from { transform: scale(1.25); filter: brightness(2); } to { transform: none; filter: none; } }
+.pnome { position: absolute; left: 0; right: 0; bottom: 0; padding: 3.4rem 1.6rem 1.1rem; font-family: Fraunces, Georgia, serif; font-size: 3.4rem; font-weight: 700; color: #fff; background: linear-gradient(180deg, rgba(21,16,10,0), rgba(21,16,10,.9)); animation: sobe .6s .3s ease-out both; }
+.colu { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; min-width: 0; }
+.colu .perg { font-size: 2.9rem; margin-bottom: 1.2rem; }
+.colu .ops { grid-template-columns: 1fr; gap: .8rem; }
+.colu .op { font-size: 1.85rem; min-height: 4.7rem; padding: .7rem 1.2rem; }
+.colu .op i { width: 3rem; height: 3rem; }
+.colu .sabia { font-size: 1.75rem; margin-top: 1.1rem; }
+.demo { flex: 1; display: flex; align-items: center; gap: 4rem; }
+.demo .colu { justify-content: center; }
+.demo .nomeEtapa { font-size: 5.6rem; color: var(--ouro); margin-bottom: 1rem; }
+.demo .chamada { margin: 0 0 1.6rem; font-size: 1.9rem; }
+.demo .modos { margin-top: 2.2rem; }
 
 /* final */
 .final { flex: 1; display: grid; grid-template-columns: 1fr 36rem; gap: 4rem; align-items: center; }
 .res + .res { margin-top: 2.2rem; }
+.res { position: relative; }
 .res .quem { font-size: 2.1rem; font-weight: 600; }
 .res .pts { font-family: Fraunces, Georgia, serif; font-size: 8rem; font-weight: 700; line-height: 1; color: #fff; font-variant-numeric: tabular-nums; }
 .res.venc .pts { color: var(--ouro); text-shadow: 0 0 3rem rgba(240,182,60,.6); }
-.res .det { font-size: 1.8rem; margin-top: .4rem; }
+.res .det { font-size: 1.8rem; margin-top: .4rem; animation: sobe .6s 2.3s ease-out both; }
 .res .det b { color: var(--ouro); }
+.selo { position: absolute; left: 30rem; top: 1rem; width: 11rem; height: 11rem; border-radius: 50%; background: var(--ouro); color: var(--noite); display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: Fraunces, Georgia, serif; font-weight: 700; font-size: 4.4rem; line-height: 1; box-shadow: 0 0 4rem rgba(240,182,60,.8); transform: rotate(-9deg); animation: selo .6s 2.2s cubic-bezier(.2,1.6,.4,1) both; }
+.selo small { font-family: Figtree, sans-serif; font-size: 1.15rem; font-weight: 800; }
+@keyframes selo { from { transform: scale(3.4) rotate(20deg); opacity: 0; } to { transform: rotate(-9deg); opacity: 1; } }
 .fimTit { font-family: Fraunces, Georgia, serif; font-size: 3.4rem; font-weight: 700; margin-bottom: 2rem; color: var(--brilho); }
 
-/* plateia, reações e efeitos */
+/* reações, confete e plateia (opcional, tecla P) */
 #fx { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 5; }
 .emo { position: absolute; bottom: -5rem; font-size: 4.4rem; animation: voa 3.4s ease-out forwards; }
 @keyframes voa { 0% { transform: translateY(0) scale(.4); opacity: 0; } 12% { opacity: 1; transform: translateY(-9vh) scale(1.2); } 100% { transform: translate(var(--dx), -82vh) rotate(var(--rot)); opacity: 0; } }
@@ -137,31 +219,38 @@ button:focus-visible { outline: .25rem solid var(--brilho); outline-offset: .3re
 .ops.uma { grid-template-columns: 1fr; max-width: 62rem; }
 .op em { margin-left: auto; padding-left: 1.4rem; font-style: normal; font-size: 1.35rem; font-weight: 800; white-space: nowrap; }
 .entra .perg { animation: sobe .6s ease-out both; }
-.entra .op { animation: sobe .5s ease-out both; }
+.entra .op { animation: voaop .55s cubic-bezier(.2,1.3,.4,1) both; }
 .entra .op:nth-child(1) { animation-delay: .5s; } .entra .op:nth-child(2) { animation-delay: .7s; } .entra .op:nth-child(3) { animation-delay: .9s; } .entra .op:nth-child(4) { animation-delay: 1.1s; }
-.entra .op.certa { animation: pulsa .7s ease-out both; }
-@keyframes pulsa { 0% { transform: scale(.9); opacity: 0; } 60% { transform: scale(1.04); opacity: 1; } 100% { transform: none; } }
+@keyframes voaop { from { transform: translateX(-6rem) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
+.entra .op.susp { animation: susp .36s ease-in-out infinite alternate; }
+.entra .op.certa { animation: pulsa .7s ease-out both; animation-delay: 0s; }
+.entra .op.fora { animation: cai2 .6s ease-in both; animation-delay: 0s; }
+@keyframes pulsa { 0% { transform: scale(.9); } 50% { transform: scale(1.07); } 100% { transform: none; } }
 body.rev #veu { background: linear-gradient(180deg, rgba(21,16,10,.4) 0%, rgba(21,16,10,0) 20%, rgba(21,16,10,.1) 44%, rgba(21,16,10,.93) 76%); }
 
-/* lista completa */
+/* lista completa e créditos */
 #lista { position: fixed; inset: 0; background: rgba(21,16,10,.96); padding: 3rem 6rem; overflow: auto; display: none; z-index: 9; }
 #lista.on { display: block; }
 #lista h2 { font-family: Fraunces, Georgia, serif; font-size: 3rem; margin-bottom: .4rem; }
 #lista p { font-size: 1.3rem; opacity: .75; margin-bottom: 1.4rem; }
 #lista .lin { cursor: pointer; max-width: 60rem; }
 #lista .lin:hover { background: rgba(217,81,47,.3); }
-@media (prefers-reduced-motion: reduce) { .bg { animation: none; } }
+#lista .cr { font-size: 1.25rem; line-height: 1.6; columns: 2; }
+@media (prefers-reduced-motion: reduce) { .bg, .fita { animation: none; } }
 </style>
 </head>
 <body>
 <div class="bg" id="bgA"></div><div class="bg" id="bgB"></div>
-<canvas id="motes"></canvas>
+<div id="mural"></div>
 <div id="veu"></div>
 <main id="tela"></main>
+<canvas id="motes"></canvas>
 <div id="fio"></div>
+<div id="alerta"></div>
 <div id="rede"></div>
 <div id="credito"></div>
 <div id="fx"></div>
+<div id="clarao"></div>
 <div id="lista"></div>
 
 <script src="mqtt.min.js"></script>
@@ -176,14 +265,15 @@ var CFG = {
   TEMPO: 20,                 // segundos para responder
   TEMPO_SABIA: 9,            // segundos mostrando a resposta e o "Você sabia?"
   PONTOS: {1: 500, 2: 700, 3: 900},   // pontos por acerto: fácil, média, difícil
-  BONUS_RAPIDEZ: 400,        // bônus máximo para quem responde na hora
+  BONUS_RAPIDEZ: 400,        // bônus máximo para quem responde na hora (nos desafios de foto vale o dobro)
   BONUS_SEQUENCIA: 200,      // bônus a partir de 3 acertos seguidos
-  PLACAR_NA_TELA: 8          // quantos nomes aparecem no placar da abertura
+  PLACAR_NA_TELA: 8,         // quantos nomes aparecem no placar da abertura
+  RELAMPAGO: true,           // na abertura, roda sozinho um "desafio relâmpago" para quem está passando
+  RELAMPAGO_PAUSA: 14        // segundos entre um desafio relâmpago e outro
 };
 var BROKERS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
 
 /* ================= PARADAS DA VIAGEM (as perguntas ficam no arquivo perguntas.js) ================= */
-var ABERTURA = {foto: 'fotos/abertura.jpg', cred: 'Ana Cláudia Matias A. Capistrano, CC BY-SA 4.0'};
 var ETAPAS = [
   {nome: 'Dunas do Jalapão', blurb: 'A areia dourada no coração do Tocantins.', foto: 'fotos/jalapao.jpg', cred: 'Marcel Favery, CC BY-SA 4.0'},
   {nome: 'Cachoeira da Velha', blurb: 'O rio Novo despenca no meio do Cerrado.', foto: 'fotos/cachoeira.jpg', cred: 'Marcel Favery, CC BY-SA 4.0'},
@@ -191,9 +281,39 @@ var ETAPAS = [
   {nome: 'Pôr do sol em Palmas', blurb: 'O céu pega fogo na Praia da Graciosa.', foto: 'fotos/palmas.jpg', cred: 'Anurb01, CC BY-SA 4.0'},
   {nome: 'Noite de estrelas', blurb: 'Longe das cidades, a Via Láctea aparece inteira.', foto: 'fotos/noite.jpg', cred: 'Paulomelo.adv, CC BY-SA 4.0'}
 ];
-// nível de cada pergunta, parada por parada: 1 fácil, 2 média, 3 difícil, 'T' pergunta do tesouro (vale o dobro)
-var ROTEIRO = [[1, 1], [1, 2], [2, 2], [2, 3], [3, 'T']];
+// cada parada tem duas rodadas: 1 fácil, 2 média, 3 difícil, 'T' pergunta do tesouro (vale o dobro),
+// 'L' desafio da lanterna, 'Z' desafio do zoom, 'M' desafio do mosaico (os três usam fotos)
+var ROTEIRO = [[1, 'L'], [1, 2], ['Z', 2], [3, 'M'], [3, 'T']];
 var NIVEL = {1: 'Fácil', 2: 'Média', 3: 'Difícil'};
+var DESAFIO = {
+  L: {nome: 'Desafio da lanterna', bl: 'Tem alguma coisa no escuro. Quem reconhecer primeiro ganha mais pontos.', q: 'O que a lanterna está iluminando?'},
+  Z: {nome: 'Desafio do zoom', bl: 'A foto começa bem de perto e vai abrindo. Responda antes que fique fácil.', q: 'A foto está abrindo. O que é?'},
+  M: {nome: 'Desafio do mosaico', bl: 'Os quadrados caem um a um. O que está escondido atrás deles?', q: 'O que está escondido atrás dos quadrados?'},
+  T: {nome: 'Pergunta do tesouro', bl: 'A última vale o dobro. Ainda dá para virar o jogo.'}
+};
+// fotos dos desafios: chave da imagem (imagens.js), grupo, nome que vira alternativa e curiosidade
+var FOTOS = [
+  ['lobo', 'b', 'Lobo-guará', 'O lobo-guará é o maior canídeo da América do Sul. Ele adora a fruta-do-lobo e sai para caçar no fim da tarde e à noite.'],
+  ['onca', 'b', 'Onça-pintada', 'A onça-pintada é o maior felino das Américas. Cada onça tem um desenho de pintas só dela, como uma impressão digital.'],
+  ['tamandua', 'b', 'Tamanduá-bandeira', 'O tamanduá-bandeira não tem dentes. Com uma língua de mais de meio metro, come milhares de formigas e cupins por dia.'],
+  ['ema', 'b', 'Ema', 'A ema é a maior ave do Brasil. Não voa, mas corre a cerca de 60 km/h. E quem choca os ovos é o macho.'],
+  ['tucano', 'b', 'Tucano-toco', 'O bico do tucano-toco é grande, mas leve. Ele ajuda a ave a perder calor nos dias quentes.'],
+  ['arara', 'b', 'Arara-azul', 'A arara-azul é a maior arara do mundo: chega a 1 metro da cabeça à ponta da cauda. O bico quebra cocos duríssimos.'],
+  ['capivara', 'b', 'Capivara', 'A capivara é o maior roedor do mundo e nada muito bem. O passarinho nas costas dela come os insetos que aparecem.'],
+  ['seriema', 'b', 'Seriema', 'O canto da seriema pode ser ouvido a mais de um quilômetro. Ela caça cobras e lagartos no chão.'],
+  ['coruja', 'b', 'Coruja-buraqueira', 'A coruja-buraqueira faz o ninho em buracos no chão e, diferente de outras corujas, fica ativa também de dia.'],
+  ['veado', 'b', 'Veado-campeiro', 'O veado-campeiro vive nos campos abertos do Cerrado. Só os machos têm chifres, que caem e nascem de novo todo ano.'],
+  ['anta', 'b', 'Anta', 'A anta é o maior mamífero terrestre do Brasil. Ela espalha sementes por onde anda e por isso é chamada de jardineira das matas.'],
+  ['pato', 'b', 'Pato-mergulhão', 'O pato-mergulhão é uma das aves aquáticas mais raras do mundo. Só vive em rios de água limpa, como os do Jalapão.'],
+  ['ipe', 'p', 'Ipê-amarelo', 'O ipê floresce na época seca, quando a árvore perde as folhas. Por isso a copa fica toda amarela.'],
+  ['buriti', 'p', 'Buriti', 'Onde tem buriti tem água por perto. Essa palmeira cresce nas veredas, os brejos do Cerrado.'],
+  ['pequi', 'p', 'Pequi', 'O pequi é um dos frutos mais famosos do Cerrado. Cuidado ao roer: o caroço esconde espinhos finos.'],
+  ['eclipse', 'c', 'Eclipse do Sol', 'No eclipse do Sol, a Lua passa entre o Sol e a Terra e a sombra dela cai sobre nós.'],
+  ['lua', 'c', 'Lua cheia', 'A Lua não tem luz própria. O que vemos é a luz do Sol refletida na superfície dela.'],
+  ['raio', 'c', 'Relâmpago', 'A luz do relâmpago chega antes do trovão porque a luz viaja muito mais rápido que o som.'],
+  ['arcoiris', 'c', 'Arco-íris', 'As gotas de água separam a luz branca do Sol nas cores do arco-íris.']
+];
+var OUTROS = {b: ['Tatu-canastra', 'Jaguatirica', 'Quati', 'Carcará', 'Raposa-do-campo', 'Jacaré'], p: ['Babaçu', 'Jatobá', 'Mangabeira', 'Capim-dourado', 'Cagaita'], c: ['Aurora', 'Cometa', 'Pôr do sol', 'Via Láctea', 'Estrela cadente']};
 
 /* ================= utilidades ================= */
 var $ = function (id) { return document.getElementById(id); };
@@ -202,9 +322,12 @@ function mil(n) { return Number(n).toLocaleString('pt-BR'); }
 function seg(ms) { return (ms / 1000).toFixed(1).replace('.', ',') + ' s'; }
 function embaralhar(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
 function codigo(n) { var s = '', c = 'abcdefghjkmnpqrstuvwxyz23456789'; for (var i = 0; i < n; i++) s += c[Math.floor(Math.random() * c.length)]; return s; }
+function letras(t) { var n = 0; return String(t).split(' ').map(function (p) { return '<span class="pal">' + p.split('').map(function (c) { return '<span class="lt" style="animation-delay:' + (n++ * 38) + 'ms">' + esc(c) + '</span>'; }).join('') + '</span>'; }).join(' '); }
 var QS = new URLSearchParams(location.search);
 ['TEMPO', 'TEMPO_SABIA'].forEach(function (k) { if (QS.get(k.toLowerCase())) CFG[k] = +QS.get(k.toLowerCase()); });
-var T_ETAPA = QS.get('rapido') ? 600 : 3200, T_CONTA = QS.get('rapido') ? 300 : 1000;
+var RAP = !!QS.get('rapido');
+var T_ETAPA = RAP ? 500 : 3400, T_DES = RAP ? 500 : 3600, T_CONTA = RAP ? 300 : 1000, T_SUSP = RAP ? 150 : 1500, T_MARCA = RAP ? 250 : 2800;
+if (QS.get('semdemo')) CFG.RELAMPAGO = false;
 
 /* ================= som ================= */
 var AC = null, mudo = false;
@@ -220,6 +343,8 @@ function bip(f, d, tipo, v, quando) {
 function somCerto() { bip(660, .15, 'triangle', .15); bip(880, .15, 'triangle', .15, .12); bip(1320, .35, 'triangle', .15, .24); }
 function somErro() { bip(220, .3, 'sawtooth', .08); bip(165, .45, 'sawtooth', .08, .18); }
 function somFim() { [523, 659, 784, 1047, 1319].forEach(function (f, i) { bip(f, .4, 'triangle', .14, i * .14); }); }
+function somRufo(ms) { for (var t = 0; t < ms / 1000; t += .07) bip(150 + t * 60, .06, 'triangle', .09, t); }
+function somChamada() { [392, 523, 659, 784].forEach(function (f, i) { bip(f, .22, 'square', .05, i * .09); }); }
 
 /* ================= placar (fica guardado neste navegador) ================= */
 var CHAVE = 'luzcerrado_placar_v1';
@@ -246,6 +371,12 @@ function abrirLista() {
   });
   $('lista').innerHTML = h; $('lista').classList.add('on');
 }
+function abrirCreditos() {
+  var h = '<h2>Créditos das fotos</h2><p>Todas as fotos vêm do Wikimedia Commons. C ou Esc fecha.</p><div class="cr">';
+  ETAPAS.forEach(function (e) { h += esc(e.nome) + ': ' + esc(e.cred) + '<br>'; });
+  Object.keys(IMG).forEach(function (k) { h += esc(IMG[k].nome) + ': ' + esc(IMG[k].cred) + '<br>'; });
+  $('lista').innerHTML = h + '</div>'; $('lista').classList.add('on');
+}
 $('lista').addEventListener('click', function (ev) {
   var l = ev.target.closest('.lin'); if (!l) return;
   var q = +l.dataset.q, p = lerPlacar(), x = p.find(function (y) { return y.q === q; });
@@ -259,7 +390,8 @@ function exportar() {
 
 /* ================= estado ================= */
 var SALA = codigo(6);
-var S = {fase: 'abertura', modo: 1, slots: [null, null], fila: [], k: -1, ate: 0, t0: 0, conta: 3, meus: [], resp: {}, pd: [0, 0, 0, 0]};
+var S = {fase: 'abertura', modo: 1, slots: [null, null], fila: [], k: -1, ate: 0, t0: 0, conta: 3, meus: [], resp: {}, pd: [0, 0, 0, 0], rev: 0, ints: [], inter: null, demo: null, demoEm: 0, demoN: 0, plat: false, agora: null};
+var PAL = null;  // animação da foto no palco: {tipo, t0, dur, f, ox, oy, ordem, rev}
 var PRES = {};   // celulares da plateia vistos há pouco
 function presentes() {
   var agora = Date.now();
@@ -282,16 +414,28 @@ function sortear(nivel) {
   usadas.push(it.q); try { localStorage.setItem('luzcerrado_usadas', JSON.stringify(usadas)); } catch (e) {}
   return it;
 }
+// sorteia a foto de um desafio (também sem repetir até acabar a lista) e monta as alternativas com nomes parecidos
+function sortearFoto(tipo) {
+  var usadas; try { usadas = JSON.parse(localStorage.getItem('luzcerrado_fotos')) || []; } catch (e) { usadas = []; }
+  var naFila = function (f) { return S.fila.some(function (x) { return x.it.i === f[0]; }); };
+  var livres = FOTOS.filter(function (f) { return usadas.indexOf(f[0]) < 0 && !naFila(f) && IMG[f[0]]; });
+  if (!livres.length) { usadas = []; livres = FOTOS.filter(function (f) { return !naFila(f) && IMG[f[0]]; }); }
+  var f = livres[Math.floor(Math.random() * livres.length)];
+  usadas.push(f[0]); try { localStorage.setItem('luzcerrado_fotos', JSON.stringify(usadas)); } catch (e) {}
+  var nomes = FOTOS.filter(function (x) { return x[1] === f[1] && x !== f; }).map(function (x) { return x[2]; }).concat(OUTROS[f[1]]);
+  return {d: 2, foto: tipo, i: f[0], q: DESAFIO[tipo].q, o: [f[2]].concat(embaralhar(nomes).slice(0, 3)), e: f[3], nome: f[2]};
+}
 function montarFila() {
   S.fila = [];
   ROTEIRO.forEach(function (niveis, e) {
     niveis.forEach(function (nv) {
-      var it = sortear(nv), ops = embaralhar(it.o.map(function (t, i) { return {t: t, ok: i === 0}; }));
+      var it = DESAFIO[nv] && nv !== 'T' ? sortearFoto(nv) : sortear(nv), ops = embaralhar(it.o.map(function (t, i) { return {t: t, ok: i === 0}; }));
       S.fila.push({e: e, it: it, ops: ops, certa: ops.findIndex(function (o) { return o.ok; })});
     });
   });
   return S.fila;
 }
+function novoPalco(tipo, dur) { return {tipo: tipo, t0: Date.now(), dur: dur, f: Math.random() * 6, ox: 38 + Math.random() * 24, oy: 36 + Math.random() * 24, ordem: embaralhar(Array.from({length: 60}, function (_, i) { return i; })), rev: false}; }
 
 /* ================= rede ================= */
 function conectar(i) {
@@ -300,7 +444,7 @@ function conectar(i) {
   try { c = mqtt.connect(BROKERS[i], {clientId: 'telao_' + codigo(8), keepalive: 30, reconnectPeriod: 2500, connectTimeout: 6000}); } catch (e) { return; }
   c.on('connect', function () {
     ok = true; NET.c = c; NET.b = i; NET.ok = true;
-    c.subscribe('luzcerrado26/' + SALA + '/in'); rede(); if (S.fase === 'entrada' || S.fase === 'abertura') desenhar(); publicar();
+    c.subscribe('luzcerrado26/' + SALA + '/in'); rede(); if (S.fase === 'entrada') desenhar(); publicar();
   });
   c.on('close', function () { if (ok) { NET.ok = false; rede(); } });
   c.on('error', function () {});
@@ -310,13 +454,14 @@ function conectar(i) {
 function rede() { $('rede').textContent = NET.ok ? '' : 'Sem conexão com os celulares (o teclado continua funcionando)'; }
 function publicar() {
   if (!NET.ok) return;
-  var a = atual(), est = {f: S.fase, m: S.modo, k: S.k, n: S.fila.length,
-    sl: vagas().map(function (j) { return j ? {id: j.id, n: j.n, p: j.p, a: j.a, g: j.g, ok: j.okUlt, nx: j.nx, pos: j.pos, c: j.c, tt: j.tt} : null; })};
+  var a = atual(), susp = S.fase === 'resposta' && S.rev === 0, est = {f: susp ? 'pergunta' : S.fase, m: S.modo, k: S.k, n: S.fila.length,
+    sl: vagas().map(function (j) { return j ? {id: j.id, n: j.n, p: susp ? j.p - j.g : j.p, a: j.a, g: j.g, ok: j.okUlt, nx: j.nx, pos: j.pos, c: j.c, tt: j.tt} : null; })};
   if (a && (S.fase === 'pergunta' || S.fase === 'resposta')) {
     est.q = a.it.q; est.o = a.ops.map(function (o) { return o.t; }); est.T = CFG.TEMPO; est.r = Math.max(0, (S.ate - Date.now()) / 1000); est.tes = !!a.it.t; est.d = a.it.d;
-    if (S.fase === 'resposta') est.cor = a.certa;
+    if (a.it.foto) est.rot = DESAFIO[a.it.foto].nome;
+    if (susp) est.r = 0; else if (S.fase === 'resposta') est.cor = a.certa;
   }
-  est.pl = presentes(); est.pr = Object.keys(S.resp).length; if (S.fase === 'resposta') est.pd = S.pd;
+  est.pl = presentes(); est.pr = Object.keys(S.resp).length; if (S.fase === 'resposta' && !susp) est.pd = S.pd;
   NET.c.publish('luzcerrado26/' + SALA + '/st', JSON.stringify(est));
 }
 setInterval(publicar, 1500);
@@ -340,7 +485,7 @@ function receber(m) {
   } else if (m.t === 'a') {
     j = S.slots.find(function (x) { return x && x.id === m.id; });
     if (j && m.k === S.k) responder(j, m.o);
-  } else if (m.t === 'n' && S.fase === 'resposta' && m.k === S.k) {
+  } else if (m.t === 'n' && S.fase === 'resposta' && S.rev === 2 && m.k === S.k) {
     j = S.slots.find(function (x) { return x && x.id === m.id; });
     if (j) { j.nx = true; if (vagas().every(function (x) { return x.nx; })) S.ate = Math.min(S.ate, Date.now() + 300); publicar(); }
   } else if (m.t === 'r' && S.fase === 'final') {
@@ -350,10 +495,10 @@ function receber(m) {
 function novoJog(id, nome) { return {id: id, n: nome, p: 0, a: -1, ta: 0, g: 0, okUlt: false, seq: 0, c: 0, tt: 0, hist: [], nx: false, pos: 0, kb: id.indexOf('kb') === 0}; }
 
 /* ================= fluxo ================= */
-function irAbertura() { S.fase = 'abertura'; S.slots = [null, null]; S.k = -1; S.fila = []; fundo(ABERTURA); desenhar(); publicar(); }
+function irAbertura() { S.fase = 'abertura'; S.slots = [null, null]; S.k = -1; S.fila = []; S.demo = null; PAL = null; S.demoEm = Date.now() + 9000; desenhar(); publicar(); }
 function irEntrada(modo) {
   bip(520, .12, 'triangle', .1);
-  S.modo = modo; S.slots = [null, null]; S.fase = 'entrada'; S.ate = Date.now() + 120000; S.meus = []; desenhar(); publicar();
+  S.demo = null; PAL = null; S.modo = modo; S.slots = [null, null]; S.fase = 'entrada'; S.ate = Date.now() + 120000; S.meus = []; desenhar(); publicar();
 }
 function checarEntrada() {
   if (S.fase === 'entrada' && vagas().every(Boolean)) setTimeout(function () {
@@ -366,34 +511,59 @@ function proxima() {
   if (S.k >= S.fila.length) return terminar();
   var a = atual(), ant = S.fila[S.k - 1];
   vagas().forEach(function (j) { j.a = -1; j.g = 0; j.nx = false; });
-  if (!ant || ant.e !== a.e) { S.fase = 'etapa'; S.ate = Date.now() + T_ETAPA; fundo(ETAPAS[a.e]); bip(392, .5, 'sine', .1); bip(587, .7, 'sine', .1, .25); }
-  else abrirPergunta();
+  S.ints = [];
+  if (!ant || ant.e !== a.e) S.ints.push({etapa: a.e});
+  if (a.it.foto || a.it.t) S.ints.push({des: a.it.foto || 'T'});
+  proximoAviso();
+}
+function proximoAviso() {
+  S.inter = S.ints.shift();
+  if (!S.inter) return abrirPergunta();
+  S.fase = 'etapa'; PAL = null;
+  if (S.inter.des) { S.ate = Date.now() + T_DES; somChamada(); clarao(); }
+  else { S.ate = Date.now() + T_ETAPA; fundo(ETAPAS[S.inter.etapa]); bip(392, .5, 'sine', .1); bip(587, .7, 'sine', .1, .25); }
   desenhar(); publicar();
 }
-function abrirPergunta() { S.resp = {}; S.pd = [0, 0, 0, 0]; fundo(ETAPAS[atual().e]); S.fase = 'pergunta'; S.t0 = Date.now(); S.ate = S.t0 + CFG.TEMPO * 1000; S.tique = 6; desenhar(); publicar(); }
+function abrirPergunta() {
+  var a = atual();
+  S.resp = {}; S.pd = [0, 0, 0, 0]; S.rev = 0; S.agora = null; fundo(ETAPAS[a.e]); S.fase = 'pergunta'; S.t0 = Date.now(); S.ate = S.t0 + CFG.TEMPO * 1000; S.tique = 6;
+  PAL = a.it.foto ? novoPalco(a.it.foto, CFG.TEMPO * 1000) : null;
+  desenhar(); publicar();
+}
 function responder(j, o) {
   if (S.fase !== 'pergunta' || j.a >= 0 || !(o >= 0 && o < atual().ops.length)) return;
-  j.a = o; j.ta = Date.now() - S.t0; bip(700, .08, 'sine', .1);
+  j.a = o; j.ta = Date.now() - S.t0; bip(700, .08, 'sine', .1); bip(1050, .1, 'sine', .1, .07); S.agora = j;
   if (vagas().every(function (x) { return x.a >= 0; })) S.ate = Math.min(S.ate, Date.now() + 500);
-  desenhar(); publicar();
+  desenhar(); publicar(); S.agora = null;
 }
+// a resposta sai em três tempos: suspense (0), marcação de quem acertou (1) e foto com o "Você sabia?" (2)
 function revelar() {
-  var a = atual(), algum = false;
+  var a = atual();
   vagas().forEach(function (j) {
     var certo = j.a === a.certa;
     if (j.a < 0) j.ta = CFG.TEMPO * 1000;
     j.tt += j.ta; j.okUlt = certo; j.hist.push(certo ? 1 : 0);
     if (certo) {
-      j.seq++; j.c++; algum = true;
-      j.g = CFG.PONTOS[a.it.d] + Math.round(CFG.BONUS_RAPIDEZ * Math.max(0, 1 - j.ta / (CFG.TEMPO * 1000))) + (j.seq >= 3 ? CFG.BONUS_SEQUENCIA : 0);
+      j.seq++; j.c++;
+      j.g = CFG.PONTOS[a.it.d] + Math.round((a.it.foto ? 2 : 1) * CFG.BONUS_RAPIDEZ * Math.max(0, 1 - j.ta / (CFG.TEMPO * 1000))) + (j.seq >= 3 ? CFG.BONUS_SEQUENCIA : 0);
       if (a.it.t) j.g *= 2;
       j.p += j.g;
     } else { j.seq = 0; j.g = 0; }
   });
-  if (algum) somCerto(); else somErro();
   S.pd = [0, 0, 0, 0]; Object.keys(S.resp).forEach(function (id) { S.pd[S.resp[id]]++; });
-  fundo(imagemDe(a)); if (algum && a.it.t) confete(60);
-  S.fase = 'resposta'; S.ate = Date.now() + CFG.TEMPO_SABIA * 1000; desenhar(); publicar();
+  S.fase = 'resposta';
+  if (a.it.foto) return marcar(2);
+  S.rev = 0; S.ate = Date.now() + T_SUSP; somRufo(T_SUSP); desenhar(); publicar();
+}
+function marcar(rev) {
+  var a = atual(), algum = vagas().some(function (j) { return j.g > 0; });
+  S.rev = rev; if (PAL) PAL.rev = true;
+  S.ate = Date.now() + (rev === 1 ? T_MARCA : CFG.TEMPO_SABIA * 1000);
+  if (algum) somCerto(); else somErro();
+  clarao(!algum); if (!algum) tremer();
+  if (algum && a.it.t) confete(80);
+  if (a.it.foto) creditar(IMG[a.it.i]);
+  desenhar(); publicar(); festejar();
 }
 function terminar() {
   var p = lerPlacar(), agora = Date.now();
@@ -401,27 +571,52 @@ function terminar() {
   vagas().forEach(function (j, i) { var q = agora + i; S.meus.push(q); j.q = q; p.push({n: j.n, p: j.p, c: j.c, t: j.tt, q: q}); });
   ordenar(p); gravarPlacar(p);
   vagas().forEach(function (j) { j.pos = p.findIndex(function (x) { return x.q === j.q; }) + 1; });
-  S.fase = 'final'; S.ate = Date.now() + 45000; fundo(ABERTURA); somFim(); confete(150); desenhar(); publicar();
+  S.fase = 'final'; PAL = null; S.ate = Date.now() + 45000; fundo(ETAPAS[3]); somRufo(1900); setTimeout(function () { if (S.fase === 'final') { somFim(); confete(170); clarao(); } }, RAP ? 100 : 2200);
+  desenhar(); publicar();
+  document.querySelectorAll('.res .pts').forEach(function (el, i) { contar(el, 0, vagas()[i].p, RAP ? 100 : 2000); });
+}
+// desafio relâmpago: na abertura, uma foto escondida aparece sozinha para quem está passando tentar adivinhar
+function tocarDemo(agora) {
+  if (!CFG.RELAMPAGO || $('lista').classList.contains('on')) return;
+  if (!S.demo && agora > S.demoEm) {
+    var tipo = 'LZM'[S.demoN++ % 3], f = FOTOS[Math.floor(Math.random() * FOTOS.length)];
+    if (S.demoF === f[0]) f = FOTOS[(FOTOS.indexOf(f) + 1) % FOTOS.length];
+    S.demoF = f[0]; S.demo = {tipo: tipo, f: f, rev: false}; S.ate = agora + 12000; PAL = novoPalco(tipo, 12000); desenhar();
+  } else if (S.demo && !S.demo.rev && agora > S.ate) {
+    S.demo.rev = true; PAL.rev = true; S.ate = agora + 8000; somCerto(); clarao(); creditar(IMG[S.demo.f[0]]); desenhar();
+  } else if (S.demo && S.demo.rev && agora > S.ate) {
+    S.demo = null; PAL = null; S.demoEm = agora + CFG.RELAMPAGO_PAUSA * 1000; desenhar();
+  }
 }
 setInterval(function () {
   var agora = Date.now(), resta = S.ate - agora;
-  if (S.fase === 'pergunta') {
-    var fr = Math.max(0, resta / (CFG.TEMPO * 1000)), s = Math.ceil(resta / 1000);
-    $('fio').style.transform = 'scaleX(' + fr + ')'; $('fio').classList.toggle('fim', s <= 5);
+  document.body.classList.toggle('urg', S.fase === 'pergunta' && resta <= 5000);
+  if (S.fase === 'abertura') tocarDemo(agora);
+  if (S.fase === 'pergunta' || (S.fase === 'abertura' && S.demo && !S.demo.rev)) {
+    var T = S.fase === 'pergunta' ? CFG.TEMPO * 1000 : 12000, fr = Math.max(0, resta / T), s = Math.ceil(resta / 1000);
+    var ar = $('arco'); if (ar) ar.style.strokeDashoffset = 276.5 * (1 - fr);
     var el = $('seg'); if (el) el.textContent = Math.max(0, s);
-    if (s < S.tique && s > 0) { S.tique = s; bip(980, .06, 'square', .05); }
-    if (resta <= 0) revelar();
+    if (S.fase === 'pergunta') {
+      $('fio').style.transform = 'scaleX(' + fr + ')'; $('fio').classList.toggle('fim', s <= 5);
+      if (s < S.tique && s > 0) { S.tique = s; bip(980, .06, 'square', .05); bip(120, .1, 'sine', .12); }
+      if (resta <= 0) revelar();
+    }
   } else if (S.fase === 'contagem' && resta <= 0) {
     S.conta--; if (S.conta <= 0) proxima(); else { S.ate = agora + T_CONTA; desenhar(); bip(440, .2, 'square', .06); }
-  } else if (S.fase === 'etapa' && resta <= 0) abrirPergunta();
-  else if (S.fase === 'resposta' && resta <= 0) proxima();
+  } else if (S.fase === 'etapa' && resta <= 0) proximoAviso();
+  else if (S.fase === 'resposta' && resta <= 0) {
+    if (S.rev === 0) marcar(1);
+    else if (S.rev === 1) { S.rev = 2; S.ate = agora + CFG.TEMPO_SABIA * 1000; fundo(imagemDe(atual())); desenhar(); publicar(); }
+    else proxima();
+  }
   else if ((S.fase === 'final' || S.fase === 'entrada') && resta <= 0) irAbertura();
 }, 100);
 
 /* ================= desenho ================= */
 var bgAtual = 0, fotoAtual = '';
+function creditar(f) { $('credito').textContent = (f.nome ? f.nome + '. ' : '') + 'Foto: ' + f.cred + ', via Wikimedia Commons'; }
 function fundo(f) {
-  $('credito').textContent = (f.nome ? f.nome + '. ' : '') + 'Foto: ' + f.cred + ', via Wikimedia Commons';
+  creditar(f);
   if (f.foto === fotoAtual) return; fotoAtual = f.foto;
   var img = new Image();
   img.onload = function () {
@@ -444,10 +639,11 @@ function luzes(j) {
   return h + '</div>';
 }
 function placas() {
+  var marc = S.fase === 'resposta' && S.rev > 0;
   return '<div class="jogs">' + vagas().map(function (j, i) {
-    var st = S.fase === 'pergunta' ? (j.a >= 0 ? 'respondeu em ' + seg(j.ta) : 'pensando...') : S.fase === 'resposta' ? (j.a < 0 ? 'não respondeu' : j.okUlt ? 'acertou em ' + seg(j.ta) + (j.seq >= 3 ? ' <span class="seq">' + j.seq + ' seguidas!</span>' : '') : 'errou') : '';
-    var g = S.fase === 'resposta' ? '<span class="ganho' + (j.g ? '' : ' zero') + '">' + (j.g ? '+' + mil(j.g) : '+0') + '</span>' : '';
-    return '<div class="jog' + (i ? ' dois' : '') + (j.a >= 0 && S.fase === 'pergunta' ? ' foi' : '') + '">' + g + '<div class="nm">' + esc(j.n) + '</div><div class="num">' + mil(j.p) + '</div><div class="st">' + st + '&nbsp;</div>' + luzes(j) + '</div>';
+    var st = !marc ? (j.a >= 0 ? 'respondeu em ' + seg(j.ta) : S.fase === 'pergunta' ? 'pensando...' : 'não respondeu') : (j.a < 0 ? 'não respondeu' : j.okUlt ? 'acertou em ' + seg(j.ta) + (j.seq >= 3 ? ' <span class="seq">' + j.seq + ' seguidas!</span>' : '') : 'errou');
+    var g = marc ? '<span class="ganho' + (j.g ? '' : ' zero') + '">' + (j.g ? '+' + mil(j.g) : '+0') + '</span>' : '';
+    return '<div class="jog' + (i ? ' dois' : '') + (j.a >= 0 && !marc ? ' foi' : '') + (S.agora === j ? ' agora' : '') + (j.seq >= 3 && (marc || S.fase === 'pergunta') ? ' fogo' : '') + '" data-i="' + i + '">' + g + '<div class="nm">' + esc(j.n) + '</div><div class="num">' + mil(S.fase === 'resposta' ? j.p - (S.rev < 2 || atual().it.foto ? j.g : 0) : j.p) + '</div><div class="st">' + st + '&nbsp;</div>' + luzes(j) + '</div>';
   }).join('') + '</div>';
 }
 function textoPlateia() {
@@ -457,25 +653,60 @@ function textoPlateia() {
 }
 function attPlateia() { var el = $('platn'); if (el) el.textContent = textoPlateia(); }
 function plateiaHtml(txt) {
-  var url = enderecoCelular(0); if (!url) return '';
+  var url = S.plat && enderecoCelular(0); if (!url) return '';
   return '<div class="plat"><div class="q">' + qr(url) + '</div><div><b>' + txt + '</b><span id="platn">' + textoPlateia() + '</span></div></div>';
 }
+function relogio(n) { return '<div class="relo"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44"/><circle id="arco" cx="50" cy="50" r="44" stroke-width="7" stroke-dasharray="276.5" stroke-dashoffset="0"/></svg><b id="seg">' + n + '</b></div>'; }
+function palcoHtml(img, nome, grande) {
+  var p = PAL, h = '<div id="palco" class="' + (grande ? 'g' : '') + (p.rev ? ' rev' : '') + '"><div id="pimg" style="background-image:url(&quot;' + img.foto + '&quot;);transform-origin:' + p.ox + '% ' + p.oy + '%"></div>';
+  if (p.tipo === 'M') {
+    var caiu = p.rev ? 60 : quantosCairam(), fora = {};
+    p.ordem.slice(0, caiu).forEach(function (i) { fora[i] = 1; });
+    h += '<div id="pesc" class="mos">'; for (var i = 0; i < 60; i++) h += '<div class="mz' + (fora[i] ? ' x' : '') + '"></div>'; h += '</div>';
+  } else if (p.tipo === 'L') h += '<div id="pesc" style="background:#060402"></div>';
+  if (p.rev) h += '<div class="pnome">' + esc(nome) + '</div>';
+  return h + '</div>';
+}
+function quantosCairam() { var fr = Math.min(1, (Date.now() - PAL.t0) / PAL.dur); return Math.floor(54 * Math.pow(Math.min(1, fr / .94), 1.25)); }
+(function animar() {
+  requestAnimationFrame(animar);
+  var p = PAL, pi = $('pimg'); if (!p || !pi || p.rev) return;
+  var s = (Date.now() - p.t0) / 1000, fr = Math.min(1, s * 1000 / p.dur);
+  if (p.tipo === 'L') {
+    var x = 50 + 40 * Math.sin(s * .95 + p.f), y = 50 + 33 * Math.sin(s * 1.43 + p.f * 2), r = 6.5 + 8.5 * fr;
+    $('pesc').style.background = 'radial-gradient(circle ' + r + 'rem at ' + x + '% ' + y + '%, rgba(6,4,2,0) 45%, rgba(6,4,2,.99) 100%)';
+  } else if (p.tipo === 'Z') {
+    pi.style.transform = 'scale(' + (1 + 10 * Math.pow(1 - Math.min(1, fr / .92), 2)) + ')';
+  } else if (p.tipo === 'M') {
+    var n = quantosCairam(), ts = $('pesc').children;
+    for (var i = 0; i < n; i++) ts[p.ordem[i]].classList.add('x');
+  }
+})();
 var ultCh = '';
 function desenhar() {
-  var h = '', a = atual(), f = S.fase;
-  document.body.classList.toggle('forte', f === 'entrada' || f === 'final');
-  document.body.classList.toggle('rev', f === 'resposta');
-  var ch = f + '|' + S.k; $('tela').classList.toggle('entra', ch !== ultCh); ultCh = ch;
+  var h = '', a = atual(), f = S.fase, i, j;
+  document.body.classList.toggle('mural', f === 'abertura' || f === 'entrada' || f === 'contagem');
+  document.body.classList.toggle('forte', f === 'entrada' || f === 'final' || f === 'contagem' || (f === 'abertura' && !!S.demo) || (f === 'etapa' && !!S.inter.des));
+  document.body.classList.toggle('rev', f === 'resposta' && S.rev === 2 && !a.it.foto);
+  var ch = [f, S.k, S.rev, S.conta, S.demo ? S.demo.f[0] + S.demo.rev : '', S.inter && (S.inter.des || S.inter.etapa)].join('|');
+  $('tela').classList.toggle('entra', ch !== ultCh); ultCh = ch;
   $('fio').classList.toggle('on', f === 'pergunta');
-  if (f === 'abertura') {
+  if (f === 'abertura' && S.demo) {
+    var d = S.demo, im = IMG[d.f[0]];
+    h = '<div class="demo">' + palcoHtml(im, d.f[2], true) + '<div class="colu"><div class="tes t">Desafio relâmpago</div>' +
+      (d.rev ? '<div class="nomeEtapa sombra">' + letras(d.f[2]) + '</div><div class="sabia sombra">' + esc(d.f[3]) + '</div>'
+             : '<div class="perg sombra">' + esc(DESAFIO[d.tipo].q) + '</div><p class="chamada sombra">Fale alto antes do tempo acabar!</p>' + relogio(12)) +
+      '<div class="modos peq"><button class="modo" data-m="1">Jogar valendo<small>tecla 1</small></button><button class="modo b" data-m="2">Jogar em dupla<small>tecla 2</small></button></div></div></div>';
+  } else if (f === 'abertura') {
+    creditar({cred: 'créditos na tecla C'});
     h = '<div class="abertura"><div><h1 class="titulo sombra">Luz do<span>Cerrado</span></h1>' +
-      '<p class="chamada sombra">Dez perguntas sobre o Tocantins, o Cerrado e a luz, das fáceis às difíceis. Você responde pelo seu celular e entra no placar da feira.</p>' +
+      '<p class="chamada sombra">Perguntas e desafios de foto sobre o Tocantins, o Cerrado e a luz. Você responde pelo celular e entra no placar da feira.</p>' +
       '<div class="modos"><button class="modo" data-m="1">Jogar sozinho<small>tecla 1</small></button><button class="modo b" data-m="2">Jogar em dupla<small>tecla 2</small></button></div>' + plateiaHtml('Só quer assistir? Entre na plateia e responda junto') + '</div>' +
       htmlPlacar(null, CFG.PLACAR_NA_TELA) + '</div>';
   } else if (f === 'entrada') {
     h = '<div class="entrada' + (S.modo === 2 ? ' dupla' : '') + '">';
-    for (var i = 0; i < S.modo; i++) {
-      var j = S.slots[i], url = enderecoCelular(i + 1);
+    for (i = 0; i < S.modo; i++) {
+      j = S.slots[i]; var url = enderecoCelular(i + 1);
       h += '<div class="lado"><h2>' + (S.modo === 2 ? 'Jogador ' + (i + 1) : 'Aponte a câmera do celular') + '</h2>';
       if (j) h += '<p>&nbsp;</p><div class="chegou"><b>' + esc(j.n) + '</b><span>' + (j.kb ? 'no teclado' : 'entrou pelo celular') + '</span></div>';
       else if (url) h += '<p>' + (S.modo === 2 ? 'Aponte a câmera do celular para este código' : 'Leia o código, escreva seu nome e responda por lá') + '</p><div class="qr">' + qr(url) + '</div>';
@@ -485,31 +716,92 @@ function desenhar() {
     h += '</div><div class="rodape">Sem internet no celular? Aperte T e jogue no teclado. Esc volta para o início.</div>';
   } else if (f === 'contagem') {
     h = '<div class="conta"><span>' + S.conta + '</span></div>';
+  } else if (f === 'etapa' && S.inter.des) {
+    var ds = DESAFIO[S.inter.des];
+    h = '<div class="etapa des sombra"><div class="n">Rodada ' + (S.k + 1) + ' de ' + S.fila.length + '</div><div class="nomeEtapa">' + letras(ds.nome) + '</div><div class="bl">' + esc(ds.bl) + '</div></div>';
   } else if (f === 'etapa') {
-    var et = ETAPAS[a.e];
-    h = '<div class="etapa sombra"><div class="n">Parada ' + (a.e + 1) + ' de ' + ETAPAS.length + '</div><div class="nomeEtapa">' + esc(et.nome) + '</div><div class="bl">' + esc(et.blurb) + '</div></div>';
+    var et = ETAPAS[S.inter.etapa];
+    h = '<div class="etapa sombra"><div class="n">Parada ' + (S.inter.etapa + 1) + ' de ' + ETAPAS.length + '</div><div class="nomeEtapa">' + letras(et.nome) + '</div><div class="bl">' + esc(et.blurb) + '</div></div>';
   } else if (f === 'pergunta' || f === 'resposta') {
-    var rev = f === 'resposta', tot = S.pd[0] + S.pd[1] + S.pd[2] + S.pd[3];
-    h = '<div class="topo"><div class="onde sombra"><b>' + esc(ETAPAS[a.e].nome) + '</b><br>Pergunta ' + (S.k + 1) + ' de ' + S.fila.length + '</div>' +
-      (rev ? '' : '<div class="seg sombra" id="seg">' + CFG.TEMPO + '</div>') + '<div class="lado2">' + plateiaHtml('Plateia, jogue junto') + placas() + '</div></div><div class="corpo">' +
-      (rev ? '' : '<div class="tes n' + a.it.d + (a.it.t ? ' t' : '') + '">' + (a.it.t ? 'Pergunta do tesouro: vale o dobro' : NIVEL[a.it.d] + ', vale ' + CFG.PONTOS[a.it.d] + ' + rapidez') + '</div>') +
-      '<div class="perg sombra' + (rev ? ' peq' : '') + '">' + esc(a.it.q) + '</div><div class="ops' + (rev ? ' uma' : '') + '">' +
-      a.ops.map(function (o, i) {
-        if (rev && !o.ok) return '';
-        return '<div class="op' + (rev ? ' certa' : '') + '"><i>' + 'ABCD'[i] + '</i><span>' + esc(o.t) + '</span>' + (rev && tot ? '<em>' + Math.round(100 * S.pd[i] / tot) + '% da plateia acertou</em>' : '') + '</div>';
-      }).join('') + '</div>' +
-      (rev ? '<div class="sabia sombra"><b>Você sabia?</b> ' + esc(a.it.e) + '</div>' : '') + '</div>';
+    var resp = f === 'resposta', marc = resp && S.rev > 0, fim = resp && S.rev === 2, tot = S.pd[0] + S.pd[1] + S.pd[2] + S.pd[3], ft = a.it.foto;
+    var quem = function (i) { return marc ? vagas().map(function (j, n) { return j.a === i ? '<u class="' + (n ? 'd' : '') + '">' + esc(j.n) + '</u>' : ''; }).join('') : ''; };
+    var chip = '<div class="tes n' + a.it.d + (a.it.t || ft ? ' t' : '') + '">' + (a.it.t ? 'Pergunta do tesouro: vale o dobro' : ft ? DESAFIO[ft].nome + ': quanto antes, mais pontos' : NIVEL[a.it.d] + ', vale ' + CFG.PONTOS[a.it.d] + ' + rapidez') + '</div>';
+    var ops = a.ops.map(function (o, i) {
+      if (fim && !o.ok && !ft) return '';
+      return '<div class="op' + (marc ? (o.ok ? ' certa' : ' fora') : resp ? ' susp' : '') + '"><i>' + 'ABCD'[i] + '</i><span>' + esc(o.t) + '</span>' + quem(i) + (fim && o.ok && tot ? '<em>' + Math.round(100 * S.pd[i] / tot) + '% da plateia acertou</em>' : '') + '</div>';
+    }).join('');
+    var sab = fim ? '<div class="sabia sombra"><b>Você sabia?</b> ' + esc(a.it.e) + '</div>' : '';
+    h = '<div class="topo"><div class="onde sombra"><b>' + esc(ETAPAS[a.e].nome) + '</b><br>Rodada ' + (S.k + 1) + ' de ' + S.fila.length + '</div>' +
+      (resp ? '' : relogio(CFG.TEMPO)) + '<div class="lado2">' + plateiaHtml('Plateia, jogue junto') + placas() + '</div></div>';
+    if (ft) h += '<div class="corpo foto">' + palcoHtml(IMG[a.it.i], a.it.nome) + '<div class="colu">' + (resp ? '' : chip + '<div class="perg sombra">' + esc(a.it.q) + '</div>') + '<div class="ops">' + ops + '</div>' + sab + '</div></div>';
+    else h += '<div class="corpo">' + (resp ? '' : chip) + '<div class="perg sombra' + (fim ? ' peq' : '') + '">' + esc(a.it.q) + '</div><div class="ops' + (fim ? ' uma' : '') + '">' + ops + '</div>' + sab + '</div>';
   } else if (f === 'final') {
     var js = vagas(), venc = S.modo === 2 ? (js[0].p === js[1].p ? (js[0].tt === js[1].tt ? -1 : (js[0].tt < js[1].tt ? 0 : 1)) : (js[0].p > js[1].p ? 0 : 1)) : 0;
     h = '<div class="final"><div><div class="fimTit sombra">' + (S.modo === 2 ? (venc < 0 ? 'Empate!' : esc(js[venc].n) + ' venceu a dupla') : 'Fim da viagem') + '</div>' +
       js.map(function (j, i) {
-        return '<div class="res sombra' + (i === venc ? ' venc' : '') + '"><div class="quem">' + esc(j.n) + '</div><div class="pts">' + mil(j.p) + '</div><div class="det"><b>' + j.pos + 'º lugar</b> no placar. ' +
+        return '<div class="res sombra' + (i === venc ? ' venc' : '') + '"><div class="selo">' + j.pos + 'º<small>no placar</small></div><div class="quem">' + esc(j.n) + '</div><div class="pts">' + mil(j.p) + '</div><div class="det">' +
           j.c + ' de ' + S.fila.length + ' certas, ' + seg(j.tt) + ' respondendo.</div></div>';
       }).join('') + '</div>' + htmlPlacar(null, 6, S.meus) + '</div>';
   }
   $('tela').innerHTML = h;
 }
 $('tela').addEventListener('click', function (ev) { var b = ev.target.closest('.modo'); if (b) irEntrada(+b.dataset.m); });
+
+/* ================= efeitos ================= */
+function clarao(ruim) { var c = $('clarao'); c.className = ''; void c.offsetWidth; c.className = 'on' + (ruim ? ' ruim' : ''); }
+function tremer() { var t = $('tela'); t.classList.remove('tremer'); void t.offsetWidth; t.classList.add('tremer'); }
+function contar(el, de, para, ms) {
+  var t0 = performance.now();
+  (function passo(t) {
+    if (!el.isConnected) return;
+    var fr = Math.min(1, (t - t0) / ms); el.textContent = mil(Math.round(de + (para - de) * (1 - Math.pow(1 - fr, 3))));
+    if (fr < 1) requestAnimationFrame(passo);
+  })(t0);
+}
+// depois da resposta: vagalumes saem da alternativa certa (ou da foto) e voam até o placar de quem acertou
+var VOOS = [];
+function festejar() {
+  var orig = $('palco') || document.querySelector('.op.certa'); if (!orig) return;
+  var ro = orig.getBoundingClientRect(), x0 = ro.left + ro.width / 2, y0 = ro.top + ro.height / 2;
+  vagas().forEach(function (j, i) {
+    var el = document.querySelector('.jog[data-i="' + i + '"]'); if (!el || !j.g) return;
+    var r = el.getBoundingClientRect(), agora = performance.now();
+    for (var n = 0; n < 22; n++) VOOS.push({x0: x0 + (Math.random() - .5) * ro.width * .5, y0: y0 + (Math.random() - .5) * ro.height * .5, x1: r.left + r.width / 2, y1: r.top + r.height / 2,
+      cx: x0 + (Math.random() - .5) * innerWidth * .5, cy: y0 - Math.random() * innerHeight * .4, t0: agora + n * 28, dur: 750 + Math.random() * 450});
+    setTimeout(function () {
+      var e2 = document.querySelector('.jog[data-i="' + i + '"]'); if (!e2 || S.fase !== 'resposta') return;
+      e2.classList.add('pulso'); bip(1500, .12, 'sine', .08); contar(e2.querySelector('.num'), j.p - j.g, j.p, 800);
+    }, RAP ? 50 : 900);
+  });
+}
+(function () {
+  var cv = $('motes'), cx = cv.getContext('2d'), W, H, ps = [];
+  function tam() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+  tam(); addEventListener('resize', tam);
+  for (var i = 0; i < 46; i++) ps.push({x: Math.random(), y: Math.random(), r: .6 + Math.random() * 1.8, v: .004 + Math.random() * .012, f: Math.random() * 6});
+  function ponto(x, y, r, al) {
+    var g = cx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, 'rgba(255,236,170,' + al + ')'); g.addColorStop(1, 'rgba(255,236,170,0)');
+    cx.fillStyle = g; cx.beginPath(); cx.arc(x, y, r, 0, 7); cx.fill();
+  }
+  var parado = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  (function laco(t) {
+    cx.clearRect(0, 0, W, H);
+    if (!parado) ps.forEach(function (p) {
+      p.y -= p.v * .016; if (p.y < -.05) { p.y = 1.05; p.x = Math.random(); }
+      ponto((p.x + Math.sin(t / 2600 + p.f) * .012) * W, p.y * H, p.r * W / 180, .25 + .45 * Math.abs(Math.sin(t / 900 + p.f)));
+    });
+    VOOS = VOOS.filter(function (v) { return t < v.t0 + v.dur; });
+    VOOS.forEach(function (v) {
+      if (t < v.t0) return;
+      for (var k = 0; k < 4; k++) {
+        var u = Math.max(0, (t - v.t0) / v.dur - k * .035), e = u * u * (3 - 2 * u), m = 1 - e;
+        ponto(m * m * v.x0 + 2 * m * e * v.cx + e * e * v.x1, m * m * v.y0 + 2 * m * e * v.cy + e * e * v.y1, W / 70 * (1 - k * .2), .95 - k * .22);
+      }
+    });
+    requestAnimationFrame(laco);
+  })(0);
+})();
 
 /* ================= teclado ================= */
 function teclado() {
@@ -523,16 +815,18 @@ function teclado() {
 document.addEventListener('keydown', function (ev) {
   var k = ev.key, f = S.fase;
   if ($('lista').classList.contains('on')) {
-    if (k === 'Escape' || k === 'l' || k === 'L') $('lista').classList.remove('on');
+    if (k === 'Escape' || k === 'l' || k === 'L' || k === 'c' || k === 'C') $('lista').classList.remove('on');
     else if (k === 'e' || k === 'E') exportar();
     else if (k === 'Delete' && ev.shiftKey && confirm('Apagar TODO o placar? Não dá para desfazer.')) { gravarPlacar([]); abrirLista(); if (f === 'abertura') desenhar(); }
     return;
   }
   if (k === 'm' || k === 'M') { mudo = !mudo; return; }
   if (k === 'f' || k === 'F') { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); return; }
+  if (k === 'p' || k === 'P') { S.plat = !S.plat; desenhar(); return; }
   if (f === 'abertura') {
     if (k === '1' || k === '2') irEntrada(+k);
     else if (k === 'l' || k === 'L') abrirLista();
+    else if (k === 'c' || k === 'C') abrirCreditos();
   } else if (f === 'entrada') {
     if (k === 't' || k === 'T') teclado();
     else if (k === 'Escape') irAbertura();
@@ -542,32 +836,12 @@ document.addEventListener('keydown', function (ev) {
     if (i2 >= 0 && S.slots[1] && S.slots[1].kb) responder(S.slots[1], i2);
     if (k === 'Escape' && confirm('Encerrar esta partida?')) irAbertura();
   } else if (f === 'resposta') {
-    if (k === 'Enter' || k === ' ') S.ate = Date.now();
+    if ((k === 'Enter' || k === ' ') && S.rev === 2) S.ate = Date.now();
     if (k === 'Escape' && confirm('Encerrar esta partida?')) irAbertura();
   } else if (f === 'final' && (k === 'Enter' || k === ' ' || k === 'Escape')) irAbertura();
 });
 
-/* ================= grãos de luz ================= */
-(function () {
-  var cv = $('motes'), cx = cv.getContext('2d'), W, H, ps = [];
-  function tam() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
-  tam(); addEventListener('resize', tam);
-  for (var i = 0; i < 46; i++) ps.push({x: Math.random(), y: Math.random(), r: .6 + Math.random() * 1.8, v: .004 + Math.random() * .012, f: Math.random() * 6});
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  (function laco(t) {
-    cx.clearRect(0, 0, W, H);
-    ps.forEach(function (p) {
-      p.y -= p.v * .016; if (p.y < -.05) { p.y = 1.05; p.x = Math.random(); }
-      var x = (p.x + Math.sin(t / 2600 + p.f) * .012) * W, y = p.y * H, r = p.r * W / 900, al = .25 + .45 * Math.abs(Math.sin(t / 900 + p.f));
-      var g = cx.createRadialGradient(x, y, 0, x, y, r * 5);
-      g.addColorStop(0, 'rgba(255,236,170,' + al + ')'); g.addColorStop(1, 'rgba(255,236,170,0)');
-      cx.fillStyle = g; cx.beginPath(); cx.arc(x, y, r * 5, 0, 7); cx.fill();
-    });
-    requestAnimationFrame(laco);
-  })(0);
-})();
-
-/* ================= reações da plateia, confete e vitrine ================= */
+/* ================= reações da plateia e confete ================= */
 var EMOS = ['👏', '😮', '🔥', '😂', '❤️'];
 function reacao(i) {
   var fx = $('fx'); if (fx.children.length > 70) return;
@@ -585,15 +859,21 @@ function confete(n) {
   }
 }
 setInterval(attPlateia, 1000);
-// vitrine: na abertura, as fotos vão passando para chamar quem está por perto
-var vitrine = 0;
-setInterval(function () {
-  if (S.fase !== 'abertura' || typeof IMG === 'undefined') return;
-  var ks = Object.keys(IMG); vitrine = (vitrine + 1) % (ks.length + 1);
-  fundo(vitrine ? IMG[ks[vitrine - 1]] : ABERTURA);
-}, 7000);
+
+/* ================= mural da abertura ================= */
+(function () {
+  var fora = {tela: 1, olho: 1, solar: 1, sombra: 1};
+  var cs = ETAPAS.map(function (e) { return [e.foto, e.nome]; }).concat(Object.keys(IMG).filter(function (k) { return !fora[k]; }).map(function (k) { return [IMG[k].foto, IMG[k].nome]; }));
+  cs = embaralhar(cs); var h = '', por = Math.ceil(cs.length / 4);
+  for (var r = 0; r < 4; r++) {
+    var linha = cs.slice(r * por, (r + 1) * por).map(function (c) { return '<div class="cartao" style="background-image:url(&quot;' + c[0].replace('fotos/', 'fotos/p/') + '&quot;)"><span>' + esc(c[1]) + '</span></div>'; }).join('');
+    h += '<div class="fita' + (r % 2 ? ' r' : '') + '">' + linha + linha + '</div>';
+  }
+  $('mural').innerHTML = h;
+})();
 
 ETAPAS.forEach(function (e) { new Image().src = e.foto; });   // deixa as fotos carregadas
+FOTOS.forEach(function (f) { if (IMG[f[0]]) new Image().src = IMG[f[0]].foto; });
 irAbertura(); rede(); conectar(0);
 </script>
 </body>

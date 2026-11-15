@@ -111,7 +111,7 @@ function htmlPergunta(pontos, minha, rev) {
   var respondi = minha >= 0;
   var h = '<div class="topo"><span>Pergunta ' + (E.k + 1) + ' de ' + E.n + '</span><b>' + pontos + '</b></div>' +
     '<div class="barra"><i id="barra"' + (rev ? ' style="transform:scaleX(0)"' : '') + '></i></div>' +
-    '<div><span class="tes">' + (E.tes ? 'Tesouro: vale o dobro' : ({1: 'Fácil', 2: 'Média', 3: 'Difícil'})[E.d] || '') + '</span></div><div class="perg">' + esc(E.q) + '</div><div class="ops">';
+    '<div><span class="tes">' + (E.rot ? E.rot : E.tes ? 'Tesouro: vale o dobro' : ({1: 'Fácil', 2: 'Média', 3: 'Difícil'})[E.d] || '') + '</span></div><div class="perg">' + esc(E.q) + '</div><div class="ops">';
   E.o.forEach(function (t, i) {
     var c = rev ? (i === E.cor ? ' certa' : i === minha ? ' errada' : ' apagada') : (respondi ? (i === minha ? ' minha' : ' apagada') : '');
     h += '<button class="op' + c + '" data-o="' + i + '"' + (respondi || rev ? ' disabled' : '') + '><i>' + 'ABCD'[i] + '</i><span>' + esc(t) + '</span></button>';
