@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#15100a">
+<title>Luz do Cerrado</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Figtree:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root { --noite: #15100a; --ouro: #f0b63c; --brilho: #ffe9a8; --areia: #f6ead2; --vereda: #3fa877; --barro: #d9512f; }
+* { box-sizing: border-box; margin: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body { background: radial-gradient(120% 70% at 50% 0%, #4a3413 0%, var(--noite) 62%); background-color: var(--noite); color: var(--areia); font-family: Figtree, system-ui, sans-serif; font-size: 18px; }
+#app { min-height: 100%; display: flex; flex-direction: column; padding: 18px 16px 22px; max-width: 520px; margin: 0 auto; }
+h1 { font-family: Fraunces, Georgia, serif; font-size: 34px; line-height: 1.05; color: #fff; }
+h1 em { color: var(--ouro); }
+p { line-height: 1.4; }
+.meio { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 16px; text-align: center; }
+.topo { display: flex; justify-content: space-between; align-items: baseline; font-weight: 600; font-size: 15px; margin-bottom: 10px; }
+.topo b { font-family: Fraunces, Georgia, serif; font-size: 24px; color: var(--ouro); }
+.barra { height: 6px; border-radius: 6px; background: rgba(246,234,210,.18); overflow: hidden; margin-bottom: 14px; }
+.barra i { display: block; height: 100%; width: 100%; transform-origin: left; background: linear-gradient(90deg, var(--ouro), var(--brilho)); }
+.perg { font-family: Fraunces, Georgia, serif; font-size: 22px; line-height: 1.2; color: #fff; margin-bottom: 14px; }
+.tes { display: inline-block; background: var(--ouro); color: var(--noite); font-weight: 800; font-size: 13px; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
+.ops { flex: 1; display: grid; gap: 10px; grid-auto-rows: 1fr; }
+button { font: inherit; color: inherit; border: 0; cursor: pointer; }
+.op { display: flex; align-items: center; gap: 12px; text-align: left; background: rgba(246,234,210,.1); box-shadow: inset 0 0 0 2px rgba(246,234,210,.28); border-radius: 16px; padding: 12px 14px; font-weight: 600; font-size: 18px; line-height: 1.2; min-height: 64px; }
+.op i { flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--areia); color: var(--noite); font-style: normal; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+.op:active { transform: scale(.98); }
+.op.minha { background: var(--brilho); color: var(--noite); box-shadow: none; }
+.op.certa { background: var(--ouro); color: var(--noite); box-shadow: 0 0 24px rgba(240,182,60,.6); }
+.op.errada { background: var(--barro); color: #fff; box-shadow: none; }
+.op.apagada { opacity: .35; }
+.op[disabled] { cursor: default; }
+.aviso { text-align: center; font-weight: 600; margin-top: 12px; min-height: 26px; }
+.grande { font-family: Fraunces, Georgia, serif; font-size: 64px; line-height: 1; color: var(--ouro); }
+.acao { background: var(--ouro); color: var(--noite); font-weight: 800; font-size: 20px; padding: 16px; border-radius: 40px; width: 100%; margin-top: 14px; }
+.acao.leve { background: none; color: var(--areia); box-shadow: inset 0 0 0 2px var(--ouro); }
+input { font: inherit; font-size: 22px; width: 100%; padding: 14px 16px; border-radius: 14px; border: 2px solid rgba(246,234,210,.35); background: rgba(0,0,0,.35); color: #fff; text-align: center; }
+input:focus { outline: none; border-color: var(--ouro); }
+.fraco { opacity: .75; font-size: 15px; }
+.ok { color: var(--vereda); } .nao { color: #ff8f73; }
+.rea { margin-top: 14px; text-align: center; }
+.rea small { display: block; font-size: 13px; opacity: .7; margin-bottom: 6px; }
+.rea div { display: flex; gap: 8px; justify-content: center; }
+.rea button { font-size: 28px; width: 56px; height: 56px; border-radius: 50%; background: rgba(246,234,210,.12); transition: transform .12s; }
+.rea button:active { transform: scale(1.35) translateY(-8px); background: rgba(240,182,60,.4); }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="mqtt.min.js"></script>
+<script>
+'use strict';
+var BROKERS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
+var EMOS = ['👏', '😮', '🔥', '😂', '❤️'];
+var QS = new URLSearchParams(location.search), SALA = QS.get('s') || '', B = Math.min(BROKERS.length - 1, Math.max(0, +QS.get('b') || 0));
+var PLATEIA = QS.get('j') === '0', VAGA = QS.get('j') === '2' ? 2 : 1;
+var app = document.getElementById('app');
+function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]; }); }
+function mil(n) { return Number(n).toLocaleString('pt-BR'); }
+function guarda(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+var ID = guarda('luz_id'); if (!ID) { ID = 'c' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36); guarda('luz_id', ID); }
+
+var E = null;            // último estado recebido do telão
+var visto = 0;           // quando chegou
+var conectado = false, cli = null;
+var meuNome = guarda('luz_nome') || '';
+var pedindo = false;     // pediu para entrar e espera o telão confirmar
+var escolha = {k: -1, o: -1}, prox = -1, chave = '';
+var torc = {c: 0, n: 0, ult: -1, envios: 0};   // placar de quem joga pela plateia
+var ultReacao = 0;
+
+function enviar(m) { m.id = ID; if (cli && conectado) cli.publish('luzcerrado26/' + SALA + '/in', JSON.stringify(m)); }
+function eu() { if (!E) return null; for (var i = 0; i < E.sl.length; i++) if (E.sl[i] && E.sl[i].id === ID) return E.sl[i]; return null; }
+
+function conectar() {
+  if (!SALA || typeof mqtt === 'undefined') return;
+  cli = mqtt.connect(BROKERS[B], {clientId: 'cel_' + ID + Math.random().toString(36).slice(2, 6), keepalive: 30, reconnectPeriod: 2000, connectTimeout: 8000});
+  cli.on('connect', function () { conectado = true; cli.subscribe('luzcerrado26/' + SALA + '/st'); if (PLATEIA) enviar({t: 'h'}); desenhar(true); });
+  cli.on('close', function () { conectado = false; desenhar(true); });
+  cli.on('error', function () {});
+  cli.on('message', function (_, m) { try { E = JSON.parse(m.toString()); visto = Date.now(); E.fim = visto + (E.r || 0) * 1000; desenhar(); } catch (e) {} });
+}
+// reenvia até o telão confirmar (a rede da feira pode falhar)
+setInterval(function () {
+  var j = eu();
+  if (!E || !conectado) return;
+  if (pedindo && !j && E.f === 'entrada') enviar({t: 'j', j: VAGA, n: meuNome});
+  if (j && E.f === 'pergunta' && escolha.k === E.k && escolha.o >= 0 && j.a < 0) enviar({t: 'a', k: E.k, o: escolha.o});
+  if (j && E.f === 'resposta' && prox === E.k && !j.nx) enviar({t: 'n', k: E.k});
+  if (!j && PLATEIA && E.f === 'pergunta' && escolha.k === E.k && escolha.o >= 0 && torc.envios < 3) { torc.envios++; enviar({t: 'p', k: E.k, o: escolha.o}); }
+}, 900);
+setInterval(function () { if (PLATEIA && conectado) enviar({t: 'h'}); }, 5000);
+setInterval(function () {
+  var b = document.getElementById('barra');
+  if (b && E && E.f === 'pergunta') b.style.transform = 'scaleX(' + Math.max(0, Math.min(1, (E.fim - Date.now()) / (E.T * 1000))) + ')';
+  if (E && Date.now() - visto > 9000 && chave !== 'sumiu') desenhar(true);
+}, 120);
+
+function reacoes(txt) {
+  return '<div class="rea"><small>' + (txt || 'Mande uma reação para o telão') + '</small><div>' + EMOS.map(function (e, i) { return '<button data-e="' + i + '" aria-label="reação">' + e + '</button>'; }).join('') + '</div></div>';
+}
+app.addEventListener('click', function (ev) {
+  var b = ev.target.closest('.rea button'); if (!b) return;
+  var agora = Date.now(); if (agora - ultReacao < 350) return; ultReacao = agora;
+  enviar({t: 'e', e: +b.dataset.e});
+});
+function tela(h) { app.innerHTML = h; }
+function htmlPergunta(pontos, minha, rev) {
+  var respondi = minha >= 0;
+  var h = '<div class="topo"><span>Pergunta ' + (E.k + 1) + ' de ' + E.n + '</span><b>' + pontos + '</b></div>' +
+    '<div class="barra"><i id="barra"' + (rev ? ' style="transform:scaleX(0)"' : '') + '></i></div>' +
+    '<div><span class="tes">' + (E.tes ? 'Tesouro: vale o dobro' : ({1: 'Fácil', 2: 'Média', 3: 'Difícil'})[E.d] || '') + '</span></div><div class="perg">' + esc(E.q) + '</div><div class="ops">';
+  E.o.forEach(function (t, i) {
+    var c = rev ? (i === E.cor ? ' certa' : i === minha ? ' errada' : ' apagada') : (respondi ? (i === minha ? ' minha' : ' apagada') : '');
+    h += '<button class="op' + c + '" data-o="' + i + '"' + (respondi || rev ? ' disabled' : '') + '><i>' + 'ABCD'[i] + '</i><span>' + esc(t) + '</span></button>';
+  });
+  return h + '</div>';
+}
+function ligarOpcoes(tipo) {
+  app.querySelectorAll('.op').forEach(function (b) {
+    b.onclick = function () { escolha = {k: E.k, o: +b.dataset.o}; torc.envios = 1; enviar({t: tipo, k: E.k, o: escolha.o}); desenhar(true); };
+  });
+}
+
+function desenharPlateia() {
+  var f = E.f, minha = escolha.k === E.k ? escolha.o : -1;
+  if (f === 'pergunta') {
+    tela(htmlPergunta(torc.c + ' certas', minha, false) + '<div class="aviso">' + (minha >= 0 ? 'Resposta enviada. Olhe o telão!' : 'Plateia: toque na resposta') + '</div>' + (minha >= 0 ? reacoes() : ''));
+    if (minha < 0) ligarOpcoes('p');
+    return;
+  }
+  if (f === 'resposta') {
+    if (torc.ult !== E.k) { torc.ult = E.k; if (E.k === 0) { torc.c = 0; torc.n = 0; } torc.n++; if (minha === E.cor) torc.c++; if (navigator.vibrate) try { navigator.vibrate(minha === E.cor ? 80 : [60, 60, 60]); } catch (e) {} }
+    var tot = E.pd ? E.pd[0] + E.pd[1] + E.pd[2] + E.pd[3] : 0;
+    return tela(htmlPergunta(torc.c + ' certas', minha, true) + '<div class="aviso ' + (minha === E.cor ? 'ok' : 'nao') + '">' + (minha === E.cor ? 'Acertou!' : minha < 0 ? 'Você não respondeu' : 'Não foi dessa vez') +
+      (tot ? ' ' + Math.round(100 * E.pd[E.cor] / tot) + '% da plateia acertou.' : '') + '</div>' + reacoes());
+  }
+  if (f === 'final') return tela('<div class="meio"><p>Na plateia, você acertou</p><div class="grande">' + torc.c + ' de ' + E.n + '</div><p>Quer entrar no placar da feira? Peça a sua vez no estande.</p>' + reacoes('Aplauda quem jogou') + '</div>');
+  tela('<div class="meio"><h1>Você está na <em>plateia</em></h1><p>' + (f === 'abertura' ? 'Quando uma partida começar, as perguntas aparecem aqui e você responde junto.' : 'A partida vai começar. As perguntas aparecem aqui.') + '</p>' +
+    '<p class="fraco">Quer jogar valendo e entrar no placar? Peça a sua vez no estande.</p>' + reacoes() + '</div>');
+}
+
+function desenhar(forcar) {
+  var j = eu(), h, k;
+  if (!SALA) return tela('<div class="meio"><h1>Luz do <em>Cerrado</em></h1><p>Para jogar, aponte a câmera do celular para o código que aparece no telão do estande.</p></div>');
+  if (!E || Date.now() - visto > 9000) { k = 'sumiu';
+    if (k === chave && !forcar) return; chave = k;
+    return tela('<div class="meio"><h1>Luz do <em>Cerrado</em></h1><p>' + (conectado ? 'Procurando o telão...' : 'Conectando...') + '</p><p class="fraco">Se demorar, confira a internet do celular e leia o código de novo.</p></div>');
+  }
+  k = [E.f, E.k, j ? [j.a, j.nx, j.p].join() : 'x', pedindo, escolha.k, escolha.o, prox, conectado].join('|');
+  // enquanto a pessoa digita o nome, não redesenha (senão apaga o que ela escreveu)
+  if (E.f === 'entrada' && !j && !PLATEIA) k = ['form', E.m, pedindo, !!(E.sl[VAGA - 1] && E.sl[VAGA - 1].id !== ID)].join('|');
+  if (k === chave && !forcar) return; chave = k;
+
+  if (PLATEIA && !j) return desenharPlateia();
+
+  if (E.f === 'entrada') {
+    if (j) { pedindo = false; return tela('<div class="meio"><p>Você entrou</p><div class="grande">' + esc(j.n) + '</div><p>Agora olhe para o telão. ' + (E.m === 2 && !(E.sl[0] && E.sl[1]) ? 'Falta o outro jogador entrar.' : 'Vai começar!') + '</p></div>'); }
+    var ocupada = E.sl[VAGA - 1] && E.sl[VAGA - 1].id !== ID;
+    if (ocupada || VAGA > E.m) return tela('<div class="meio"><h1>Este lugar já tem dono</h1><p>' + (E.m === 2 ? 'Leia o outro código do telão para ser o outro jogador.' : 'Espere esta partida terminar e leia o código de novo.') + '</p></div>');
+    tela('<div class="meio"><h1>Luz do <em>Cerrado</em></h1><p>' + (E.m === 2 ? 'Você é o jogador ' + VAGA + '. ' : '') + 'Como você quer aparecer no placar?</p>' +
+      '<form id="fm"><input id="nm" maxlength="14" placeholder="Seu nome ou apelido" autocomplete="off" value="' + esc(meuNome) + '"><button class="acao">' + (pedindo ? 'Entrando...' : 'Entrar no jogo') + '</button></form>' +
+      '<p class="fraco">Só o primeiro nome ou um apelido. Ele aparece no telão.</p></div>');
+    document.getElementById('fm').onsubmit = function (ev) {
+      ev.preventDefault();
+      meuNome = document.getElementById('nm').value.trim().slice(0, 14) || 'Visitante'; guarda('luz_nome', meuNome);
+      pedindo = true; enviar({t: 'j', j: VAGA, n: meuNome}); desenhar(true);
+      try { navigator.wakeLock && navigator.wakeLock.request('screen').catch(function () {}); } catch (e) {}
+    };
+    return;
+  }
+  if (E.f === 'abertura') { pedindo = false; return tela('<div class="meio"><h1>Luz do <em>Cerrado</em></h1><p>A partida acabou. Para jogar de novo, escolha o modo no telão e leia o novo código.</p></div>'); }
+  if (!j) return tela('<div class="meio"><h1>Partida em andamento</h1><p>Acompanhe pelo telão. Quando ela terminar, leia o código de novo para jogar.</p>' + reacoes('Enquanto isso, torça pelo telão') + '</div>');
+
+  if (E.f === 'contagem' || E.f === 'etapa') return tela('<div class="meio"><p>' + esc(j.n) + ', prepare-se</p><div class="grande">Atenção</div><p>A pergunta vai aparecer aqui e no telão.</p></div>');
+
+  if (E.f === 'pergunta' || E.f === 'resposta') {
+    var rev = E.f === 'resposta', minha = rev ? j.a : (escolha.k === E.k ? escolha.o : j.a), respondi = minha >= 0;
+    h = htmlPergunta(mil(j.p), minha, rev);
+    if (rev) h += '<div class="aviso ' + (j.ok ? 'ok' : 'nao') + '">' + (j.ok ? 'Acertou! +' + mil(j.g) + ' pontos' : j.a < 0 ? 'O tempo acabou' : 'Não foi dessa vez') + '</div>' +
+      '<button class="acao leve" id="px"' + (prox === E.k ? ' disabled' : '') + '>' + (prox === E.k ? 'Aguarde...' : 'Próxima pergunta') + '</button>';
+    else h += '<div class="aviso">' + (respondi ? 'Resposta enviada. Olhe o telão!' : 'Toque na resposta') + '</div>';
+    tela(h);
+    if (rev) { document.getElementById('px').onclick = function () { prox = E.k; enviar({t: 'n', k: E.k}); desenhar(true); }; if (navigator.vibrate && forcar !== true) try { navigator.vibrate(j.ok ? 80 : [60, 60, 60]); } catch (e) {} }
+    else if (!respondi) ligarOpcoes('a');
+    return;
+  }
+  if (E.f === 'final') {
+    tela('<div class="meio"><p>' + esc(j.n) + ', você fez</p><div class="grande">' + mil(j.p) + '</div><p>pontos, com ' + j.c + ' de ' + E.n + ' certas em ' + (j.tt / 1000).toFixed(1).replace('.', ',') + ' s de resposta.</p>' +
+      '<p><b>' + j.pos + 'º lugar</b> no placar da feira. Seu nome está no telão.</p><button class="acao" id="dn">Liberar o telão para o próximo</button>' +
+      '<p class="fraco">Obrigado por jogar! Conheça as luminárias do Cerrado no nosso estande.</p></div>');
+    document.getElementById('dn').onclick = function () { enviar({t: 'r'}); };
+  }
+}
+desenhar(true); conectar();
+</script>
+</body>
+</html>

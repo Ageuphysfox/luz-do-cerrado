@@ -1,0 +1,33 @@
+/* Imagens que aparecem na hora da resposta e na vitrine da abertura (Wikimedia Commons).
+   Para trocar uma imagem, substitua o arquivo em fotos/ mantendo o mesmo nome e ajuste o crédito aqui. */
+var IMG = {
+  lobo: {foto: 'fotos/lobo.jpg', nome: 'Lobo-guará', cred: 'Whaldener Endo, domínio público'},
+  onca: {foto: 'fotos/onca.jpg', nome: 'Onça-pintada', cred: 'Charles J. Sharp, CC BY-SA 4.0'},
+  tamandua: {foto: 'fotos/tamandua.jpg', nome: 'Tamanduá-bandeira', cred: 'Giles Laurent, CC BY-SA 4.0'},
+  ema: {foto: 'fotos/ema.jpg', nome: 'Ema e ipês-rosa', cred: 'Giles Laurent, CC BY-SA 4.0'},
+  tucano: {foto: 'fotos/tucano.jpg', nome: 'Tucano-toco', cred: 'Giles Laurent, CC BY-SA 4.0'},
+  arara: {foto: 'fotos/arara.jpg', nome: 'Araras-azuis', cred: 'Giles Laurent, CC BY-SA 4.0'},
+  capivara: {foto: 'fotos/capivara.jpg', nome: 'Capivara e suiriri-cavaleiro', cred: 'Charles J. Sharp, CC BY-SA 4.0'},
+  seriema: {foto: 'fotos/seriema.jpg', nome: 'Seriemas', cred: 'Manfred Werner / Tsui, CC BY-SA 3.0'},
+  coruja: {foto: 'fotos/coruja.jpg', nome: 'Corujas-buraqueiras', cred: 'travelwayoflife, CC BY-SA 2.0'},
+  ipe: {foto: 'fotos/ipe.jpg', nome: 'Ipê-amarelo', cred: 'James Deann, CC BY-SA 4.0'},
+  buriti: {foto: 'fotos/buriti.jpg', nome: 'Buritis na vereda', cred: 'Denis A. C. Conrado, Attribution'},
+  pequi: {foto: 'fotos/pequi.jpg', nome: 'Pequi', cred: 'Arley da Cruz, CC BY-SA 4.0'},
+  capim: {foto: 'fotos/capim.jpg', nome: 'Artesanato de capim-dourado', cred: 'Mrpiccin, CC BY-SA 4.0'},
+  fervedouro: {foto: 'fotos/fervedouro.jpg', nome: 'Fervedouro no Jalapão', cred: 'Amanda Leite, CC BY-SA 3.0'},
+  arcoiris: {foto: 'fotos/arcoiris.jpg', nome: 'Arco-íris na névoa de uma cachoeira', cred: 'Jakub Hałun, CC BY 4.0'},
+  prisma: {foto: 'fotos/prisma.jpg', nome: 'Luz branca separada por um prisma', cred: 'Kilohn limahn, CC BY-SA 4.0'},
+  eclipse: {foto: 'fotos/eclipse.jpg', nome: 'Eclipse total do Sol', cred: 'Lviatour, CC BY-SA 4.0'},
+  lua: {foto: 'fotos/lua.jpg', nome: 'Lua cheia', cred: 'W.carter, CC BY-SA 4.0'},
+  raio: {foto: 'fotos/raio.jpg', nome: 'Relâmpagos', cred: 'Maxime Raynal from France, CC BY 2.0'},
+  solar: {foto: 'fotos/solar.jpg', nome: 'Painéis solares', cred: 'USDAgov, domínio público'},
+  sombra: {foto: 'fotos/sombra.jpg', nome: 'Sombras compridas no fim da tarde', cred: 'James Petts from London, England, CC BY-SA 2.0'},
+  olho: {foto: 'fotos/olho.jpg', nome: 'Íris e pupila', cred: 'Matt Ming from Beijing, China, CC BY 2.0'},
+  cerrado: {foto: 'fotos/cerrado.jpg', nome: 'Cerrado', cred: 'Gualter Naves, CC BY-SA 4.0'},
+  pato: {foto: 'fotos/pato.jpg', nome: 'Pato-mergulhão', cred: 'Petr Hamerník, Zoo Praha, domínio público'},
+  tela: {foto: 'fotos/tela.jpg', nome: 'Pontos de uma tela, vistos de perto', cred: 'Hustvedt, CC BY-SA 3.0'},
+  espelho: {foto: 'fotos/espelho.jpg', nome: 'Reflexo na água', cred: 'Giorgi Balakhadze, CC BY-SA 4.0'},
+  folha: {foto: 'fotos/folha.jpg', nome: 'Folha contra a luz', cred: 'Md.Farhan Nabil, CC BY-SA 4.0'},
+  veado: {foto: 'fotos/veado.jpg', nome: 'Veado-campeiro', cred: 'Fedaro, CC BY-SA 4.0'},
+  anta: {foto: 'fotos/anta.jpg', nome: 'Anta', cred: 'Giles Laurent, CC BY-SA 4.0'}
+};

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luz do Cerrado - telão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Figtree:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root { --noite: #15100a; --ouro: #f0b63c; --brilho: #ffe9a8; --areia: #f6ead2; --vereda: #3fa877; --barro: #d9512f; }
+* { box-sizing: border-box; margin: 0; }
+html { font-size: min(1vw, 1.78vh); }
+body { background: var(--noite); color: var(--areia); font-family: Figtree, "Segoe UI", sans-serif; overflow: hidden; height: 100vh; cursor: default; user-select: none; }
+.titulo, .perg, .nomeEtapa, .num { font-family: Fraunces, Georgia, serif; }
+.bg { position: fixed; inset: -4%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.6s ease; animation: passeio 46s ease-in-out infinite alternate; }
+.bg.on { opacity: 1; }
+@keyframes passeio { from { transform: scale(1.02) translate(-1%, .6%); } to { transform: scale(1.13) translate(1.4%, -1%); } }
+#motes { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+#veu { position: fixed; inset: 0; background: linear-gradient(180deg, rgba(21,16,10,.55) 0%, rgba(21,16,10,.12) 26%, rgba(21,16,10,.5) 58%, rgba(21,16,10,.93) 100%); transition: background 1s; }
+body.forte #veu { background: linear-gradient(180deg, rgba(21,16,10,.74) 0%, rgba(21,16,10,.62) 40%, rgba(21,16,10,.93) 100%); }
+#fio { position: fixed; left: 0; top: 0; height: .55rem; width: 100%; transform-origin: left; background: linear-gradient(90deg, var(--ouro), var(--brilho)); box-shadow: 0 0 1.6rem .3rem rgba(255,214,120,.75); opacity: 0; transition: opacity .4s; }
+#fio.on { opacity: 1; }
+#fio.fim { background: var(--barro); box-shadow: 0 0 1.6rem .3rem rgba(217,81,47,.8); }
+#tela { position: fixed; inset: 0; padding: 4rem 5rem 3.4rem; display: flex; flex-direction: column; }
+#credito { position: fixed; right: 1.2rem; bottom: .7rem; font-size: .95rem; opacity: .6; text-shadow: 0 1px 3px #000; }
+#rede { position: fixed; left: 1.2rem; bottom: .7rem; font-size: .95rem; opacity: .7; text-shadow: 0 1px 3px #000; }
+.sombra { text-shadow: 0 .15rem 1.2rem rgba(0,0,0,.75), 0 0 .2rem rgba(0,0,0,.6); }
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+button:focus-visible { outline: .25rem solid var(--brilho); outline-offset: .3rem; }
+
+/* abertura */
+.abertura { flex: 1; display: grid; grid-template-columns: 1fr 34rem; gap: 5rem; align-items: end; }
+.titulo { font-size: 9.4rem; line-height: .92; font-weight: 700; letter-spacing: -.02em; color: #fff; }
+.titulo span { display: block; color: var(--ouro); font-weight: 500; font-style: italic; }
+.chamada { font-size: 2.1rem; max-width: 40rem; margin: 2rem 0 2.6rem; line-height: 1.3; }
+.modos { display: flex; gap: 1.4rem; }
+.modo { background: var(--ouro); color: var(--noite); font-weight: 800; font-size: 2.1rem; padding: 1.3rem 2.4rem; border-radius: 5rem; box-shadow: 0 0 2.6rem rgba(240,182,60,.5); transition: transform .15s; }
+.modo.b { background: rgba(21,16,10,.55); color: var(--areia); box-shadow: inset 0 0 0 .2rem var(--ouro); backdrop-filter: blur(6px); }
+.modo:hover { transform: translateY(-.25rem); }
+.modo small { display: block; font-size: 1.05rem; font-weight: 600; opacity: .75; }
+
+/* placar */
+.placar { background: rgba(21,16,10,.66); backdrop-filter: blur(10px); border-radius: 1.6rem; padding: 1.8rem 2rem; border-top: .3rem solid var(--ouro); }
+.placar h2 { font-family: Fraunces, Georgia, serif; font-size: 2.3rem; font-weight: 700; margin-bottom: .2rem; }
+.placar .sub { font-size: 1.15rem; opacity: .7; margin-bottom: 1rem; }
+.lin { display: grid; grid-template-columns: 2.6rem 1fr auto 6.2rem; gap: .8rem; align-items: baseline; padding: .5rem .6rem; font-size: 1.65rem; border-radius: .6rem; }
+.lin + .lin { border-top: 1px solid rgba(246,234,210,.13); }
+.lin .pos { opacity: .6; font-weight: 800; }
+.lin .nm { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lin .pt { font-weight: 800; font-variant-numeric: tabular-nums; }
+.lin .tp { font-size: 1.2rem; opacity: .7; text-align: right; font-variant-numeric: tabular-nums; }
+.lin.um .pos, .lin.um .pt { color: var(--ouro); opacity: 1; }
+.lin.eu { background: rgba(240,182,60,.22); box-shadow: inset 0 0 0 .12rem var(--ouro); }
+.vazio { font-size: 1.5rem; opacity: .75; padding: 1.2rem 0; line-height: 1.35; }
+
+/* entrada (QR) */
+.entrada { flex: 1; display: grid; gap: 0; align-items: center; }
+.entrada.dupla { grid-template-columns: 1fr 1fr; }
+.lado { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 3rem; }
+.entrada.dupla .lado + .lado { border-left: .15rem solid rgba(246,234,210,.3); }
+.lado h2 { font-family: Fraunces, Georgia, serif; font-size: 3.6rem; font-weight: 700; }
+.lado p { font-size: 1.7rem; margin: .5rem 0 1.6rem; max-width: 30rem; line-height: 1.3; }
+.qr { background: #fff; padding: 1.2rem; border-radius: 1.6rem; width: 25rem; height: 25rem; box-shadow: 0 0 4rem rgba(255,233,168,.45); }
+.qr svg { width: 100%; height: 100%; display: block; }
+.chegou { width: 25rem; height: 25rem; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(255,233,168,.95), rgba(240,182,60,.85) 55%, rgba(240,182,60,0) 72%); color: var(--noite); animation: acende .7s ease-out; }
+.chegou b { font-family: Fraunces, Georgia, serif; font-size: 3.3rem; max-width: 17rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chegou span { font-size: 1.5rem; font-weight: 600; }
+@keyframes acende { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.rodape { text-align: center; font-size: 1.35rem; opacity: .85; }
+.conta { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; font-family: Fraunces, Georgia, serif; font-size: 30rem; font-weight: 700; color: var(--brilho); text-shadow: 0 0 6rem rgba(240,182,60,.9); }
+.conta span { animation: acende 1s ease-out; }
+
+/* etapa */
+.etapa { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
+.etapa .n { font-size: 2rem; font-weight: 600; color: var(--ouro); }
+.nomeEtapa { font-size: 8.4rem; line-height: 1; font-weight: 700; color: #fff; max-width: 70rem; animation: sobe 1s ease-out; }
+.etapa .bl { font-size: 2.3rem; margin-top: 1.2rem; }
+@keyframes sobe { from { transform: translateY(2.5rem); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* pergunta */
+.topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; }
+.onde { font-size: 1.6rem; font-weight: 600; }
+.onde b { color: var(--ouro); }
+.jogs { display: flex; gap: 1.2rem; }
+.jog { min-width: 17rem; background: rgba(21,16,10,.66); backdrop-filter: blur(10px); border-radius: 1.2rem; padding: .9rem 1.3rem; border-left: .45rem solid var(--ouro); position: relative; }
+.jog.dois { border-left-color: #7fd0e8; }
+.jog .nm { font-size: 1.5rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 16rem; }
+.jog .num { font-size: 2.9rem; font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.jog .st { font-size: 1.15rem; opacity: .8; }
+.jog.foi .st { color: var(--brilho); opacity: 1; font-weight: 600; }
+.jog .ganho { position: absolute; right: 1rem; top: .8rem; font-size: 1.7rem; font-weight: 800; color: var(--vereda); animation: sobe .5s ease-out; }
+.jog .ganho.zero { color: var(--barro); }
+.corpo { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
+.tes { display: inline-block; align-self: flex-start; background: rgba(21,16,10,.7); color: var(--areia); box-shadow: inset 0 0 0 .15rem var(--vereda); font-weight: 800; font-size: 1.4rem; padding: .4rem 1.1rem; border-radius: 3rem; margin-bottom: 1rem; }
+.tes.n2 { box-shadow: inset 0 0 0 .15rem var(--ouro); } .tes.n3 { box-shadow: inset 0 0 0 .15rem var(--barro); } .tes.t { background: var(--ouro); color: var(--noite); box-shadow: 0 0 2rem rgba(240,182,60,.7); }
+.perg { font-size: 4.2rem; line-height: 1.12; font-weight: 500; color: #fff; max-width: 76rem; margin-bottom: 2rem; }
+.ops { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.4rem; }
+.op { display: flex; align-items: center; gap: 1.2rem; background: rgba(21,16,10,.7); backdrop-filter: blur(10px); border-radius: 1.1rem; padding: 1rem 1.4rem; font-size: 2.05rem; font-weight: 600; line-height: 1.18; min-height: 5.6rem; transition: opacity .5s, background .5s, color .5s; }
+.op i { flex: none; width: 3.4rem; height: 3.4rem; border-radius: 50%; background: var(--areia); color: var(--noite); font-style: normal; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+.op.certa { background: var(--ouro); color: var(--noite); box-shadow: 0 0 3rem rgba(240,182,60,.7); }
+.op.certa i { background: var(--noite); color: var(--brilho); }
+.op.fora { opacity: .32; }
+.sabia { margin-top: 1.4rem; font-size: 1.95rem; line-height: 1.32; max-width: 82rem; padding-left: 1.4rem; border-left: .35rem solid var(--ouro); animation: sobe .6s ease-out; }
+.sabia b { color: var(--ouro); }
+.seg { font-family: Fraunces, Georgia, serif; font-size: 3.4rem; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 5rem; text-align: center; }
+
+/* final */
+.final { flex: 1; display: grid; grid-template-columns: 1fr 36rem; gap: 4rem; align-items: center; }
+.res + .res { margin-top: 2.2rem; }
+.res .quem { font-size: 2.1rem; font-weight: 600; }
+.res .pts { font-family: Fraunces, Georgia, serif; font-size: 8rem; font-weight: 700; line-height: 1; color: #fff; font-variant-numeric: tabular-nums; }
+.res.venc .pts { color: var(--ouro); text-shadow: 0 0 3rem rgba(240,182,60,.6); }
+.res .det { font-size: 1.8rem; margin-top: .4rem; }
+.res .det b { color: var(--ouro); }
+.fimTit { font-family: Fraunces, Georgia, serif; font-size: 3.4rem; font-weight: 700; margin-bottom: 2rem; color: var(--brilho); }
+
+/* plateia, reações e efeitos */
+#fx { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 5; }
+.emo { position: absolute; bottom: -5rem; font-size: 4.4rem; animation: voa 3.4s ease-out forwards; }
+@keyframes voa { 0% { transform: translateY(0) scale(.4); opacity: 0; } 12% { opacity: 1; transform: translateY(-9vh) scale(1.2); } 100% { transform: translate(var(--dx), -82vh) rotate(var(--rot)); opacity: 0; } }
+.conf { position: absolute; top: -3rem; width: .9rem; height: 1.6rem; border-radius: .2rem; animation: cai linear forwards; }
+@keyframes cai { to { transform: translate(var(--dx), 112vh) rotate(900deg); } }
+.plat { display: flex; align-items: center; gap: .9rem; background: rgba(21,16,10,.66); backdrop-filter: blur(10px); border-radius: 1.2rem; padding: .6rem 1.1rem .6rem .6rem; }
+.plat .q { flex: none; background: #fff; border-radius: .6rem; padding: .3rem; width: 6.6rem; height: 6.6rem; }
+.plat .q svg { width: 100%; height: 100%; display: block; }
+.plat b { display: block; font-size: 1.3rem; max-width: 12rem; line-height: 1.15; }
+.plat span { font-size: 1.05rem; opacity: .8; display: block; max-width: 12rem; margin-top: .2rem; }
+.abertura .plat { display: inline-flex; margin-top: 1.6rem; }
+.abertura .plat b, .abertura .plat span { max-width: 22rem; }
+.lado2 { display: flex; gap: 1.2rem; align-items: flex-start; }
+.luzes { display: flex; gap: .28rem; margin-top: .4rem; }
+.luzes i { width: 1.1rem; height: .45rem; border-radius: .3rem; background: rgba(246,234,210,.22); }
+.luzes i.s { background: var(--ouro); box-shadow: 0 0 .7rem var(--ouro); }
+.luzes i.n { background: var(--barro); }
+.seq { color: var(--brilho); font-weight: 800; }
+.perg.peq { font-size: 2.7rem; margin-bottom: 1.1rem; max-width: 70rem; }
+.ops.uma { grid-template-columns: 1fr; max-width: 62rem; }
+.op em { margin-left: auto; padding-left: 1.4rem; font-style: normal; font-size: 1.35rem; font-weight: 800; white-space: nowrap; }
+.entra .perg { animation: sobe .6s ease-out both; }
+.entra .op { animation: sobe .5s ease-out both; }
+.entra .op:nth-child(1) { animation-delay: .5s; } .entra .op:nth-child(2) { animation-delay: .7s; } .entra .op:nth-child(3) { animation-delay: .9s; } .entra .op:nth-child(4) { animation-delay: 1.1s; }
+.entra .op.certa { animation: pulsa .7s ease-out both; }
+@keyframes pulsa { 0% { transform: scale(.9); opacity: 0; } 60% { transform: scale(1.04); opacity: 1; } 100% { transform: none; } }
+body.rev #veu { background: linear-gradient(180deg, rgba(21,16,10,.4) 0%, rgba(21,16,10,0) 20%, rgba(21,16,10,.1) 44%, rgba(21,16,10,.93) 76%); }
+
+/* lista completa */
+#lista { position: fixed; inset: 0; background: rgba(21,16,10,.96); padding: 3rem 6rem; overflow: auto; display: none; z-index: 9; }
+#lista.on { display: block; }
+#lista h2 { font-family: Fraunces, Georgia, serif; font-size: 3rem; margin-bottom: .4rem; }
+#lista p { font-size: 1.3rem; opacity: .75; margin-bottom: 1.4rem; }
+#lista .lin { cursor: pointer; max-width: 60rem; }
+#lista .lin:hover { background: rgba(217,81,47,.3); }
+@media (prefers-reduced-motion: reduce) { .bg { animation: none; } }
+</style>
+</head>
+<body>
+<div class="bg" id="bgA"></div><div class="bg" id="bgB"></div>
+<canvas id="motes"></canvas>
+<div id="veu"></div>
+<main id="tela"></main>
+<div id="fio"></div>
+<div id="rede"></div>
+<div id="credito"></div>
+<div id="fx"></div>
+<div id="lista"></div>
+
+<script src="mqtt.min.js"></script>
+<script src="qrcode.min.js"></script>
+<script src="perguntas.js"></script>
+<script src="imagens.js"></script>
+<script>
+'use strict';
+/* ================= AJUSTES (pode mexer) ================= */
+var CFG = {
+  ENDERECO: 'https://ageuphysfox.github.io/luz-do-cerrado/',              // endereço publicado da pasta do jogo (ex.: https://usuario.github.io/luz-do-cerrado/). Vazio = usa o endereço desta página
+  TEMPO: 20,                 // segundos para responder
+  TEMPO_SABIA: 9,            // segundos mostrando a resposta e o "Você sabia?"
+  PONTOS: {1: 500, 2: 700, 3: 900},   // pontos por acerto: fácil, média, difícil
+  BONUS_RAPIDEZ: 400,        // bônus máximo para quem responde na hora
+  BONUS_SEQUENCIA: 200,      // bônus a partir de 3 acertos seguidos
+  PLACAR_NA_TELA: 8          // quantos nomes aparecem no placar da abertura
+};
+var BROKERS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
+
+/* ================= PARADAS DA VIAGEM (as perguntas ficam no arquivo perguntas.js) ================= */
+var ABERTURA = {foto: 'fotos/abertura.jpg', cred: 'Ana Cláudia Matias A. Capistrano, CC BY-SA 4.0'};
+var ETAPAS = [
+  {nome: 'Dunas do Jalapão', blurb: 'A areia dourada no coração do Tocantins.', foto: 'fotos/jalapao.jpg', cred: 'Marcel Favery, CC BY-SA 4.0'},
+  {nome: 'Cachoeira da Velha', blurb: 'O rio Novo despenca no meio do Cerrado.', foto: 'fotos/cachoeira.jpg', cred: 'Marcel Favery, CC BY-SA 4.0'},
+  {nome: 'Ilha do Bananal', blurb: 'O rio Javaés abraça a maior ilha de rio do mundo.', foto: 'fotos/bananal.jpg', cred: 'Arthur to, domínio público'},
+  {nome: 'Pôr do sol em Palmas', blurb: 'O céu pega fogo na Praia da Graciosa.', foto: 'fotos/palmas.jpg', cred: 'Anurb01, CC BY-SA 4.0'},
+  {nome: 'Noite de estrelas', blurb: 'Longe das cidades, a Via Láctea aparece inteira.', foto: 'fotos/noite.jpg', cred: 'Paulomelo.adv, CC BY-SA 4.0'}
+];
+// nível de cada pergunta, parada por parada: 1 fácil, 2 média, 3 difícil, 'T' pergunta do tesouro (vale o dobro)
+var ROTEIRO = [[1, 1], [1, 2], [2, 2], [2, 3], [3, 'T']];
+var NIVEL = {1: 'Fácil', 2: 'Média', 3: 'Difícil'};
+
+/* ================= utilidades ================= */
+var $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]; }); }
+function mil(n) { return Number(n).toLocaleString('pt-BR'); }
+function seg(ms) { return (ms / 1000).toFixed(1).replace('.', ',') + ' s'; }
+function embaralhar(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function codigo(n) { var s = '', c = 'abcdefghjkmnpqrstuvwxyz23456789'; for (var i = 0; i < n; i++) s += c[Math.floor(Math.random() * c.length)]; return s; }
+var QS = new URLSearchParams(location.search);
+['TEMPO', 'TEMPO_SABIA'].forEach(function (k) { if (QS.get(k.toLowerCase())) CFG[k] = +QS.get(k.toLowerCase()); });
+var T_ETAPA = QS.get('rapido') ? 600 : 3200, T_CONTA = QS.get('rapido') ? 300 : 1000;
+
+/* ================= som ================= */
+var AC = null, mudo = false;
+function bip(f, d, tipo, v, quando) {
+  if (mudo) return;
+  try {
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    var o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime + (quando || 0);
+    o.type = tipo || 'sine'; o.frequency.value = f; g.gain.setValueAtTime(v || .12, t); g.gain.exponentialRampToValueAtTime(.001, t + d);
+    o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + d);
+  } catch (e) {}
+}
+function somCerto() { bip(660, .15, 'triangle', .15); bip(880, .15, 'triangle', .15, .12); bip(1320, .35, 'triangle', .15, .24); }
+function somErro() { bip(220, .3, 'sawtooth', .08); bip(165, .45, 'sawtooth', .08, .18); }
+function somFim() { [523, 659, 784, 1047, 1319].forEach(function (f, i) { bip(f, .4, 'triangle', .14, i * .14); }); }
+
+/* ================= placar (fica guardado neste navegador) ================= */
+var CHAVE = 'luzcerrado_placar_v1';
+function lerPlacar() { try { return JSON.parse(localStorage.getItem(CHAVE)) || []; } catch (e) { return []; } }
+function gravarPlacar(p) { try { localStorage.setItem(CHAVE, JSON.stringify(p)); } catch (e) {} }
+function ordenar(p) { return p.sort(function (a, b) { return b.p - a.p || a.t - b.t || a.q - b.q; }); }
+function htmlPlacar(lista, n, meus) {
+  var todos = ordenar(lerPlacar()), h = '<div class="placar"><h2>Placar da feira</h2><div class="sub">' +
+    (todos.length ? todos.length + (todos.length > 1 ? ' pessoas já jogaram' : ' pessoa já jogou') + '. Empate? Ganha quem respondeu mais rápido.' : 'Pontos e tempo de resposta') + '</div>';
+  if (!todos.length) h += '<div class="vazio">Ninguém jogou ainda.<br>O primeiro nome do placar pode ser o seu.</div>';
+  var mostrados = todos.slice(0, n);
+  (meus || []).forEach(function (q) { var i = todos.findIndex(function (x) { return x.q === q; }); if (i >= n) mostrados.push(todos[i]); });
+  mostrados.forEach(function (x) {
+    var i = todos.indexOf(x);
+    h += '<div class="lin' + (i === 0 ? ' um' : '') + ((meus || []).indexOf(x.q) >= 0 ? ' eu' : '') + '"><span class="pos">' + (i + 1) + 'º</span><span class="nm">' + esc(x.n) +
+      '</span><span class="pt">' + mil(x.p) + '</span><span class="tp">' + seg(x.t) + '</span></div>';
+  });
+  return h + '</div>';
+}
+function abrirLista() {
+  var todos = ordenar(lerPlacar()), h = '<h2>Placar completo (' + todos.length + ')</h2><p>Clique em um nome para apagar. Teclas: E exporta a planilha, Shift+Delete apaga tudo, L ou Esc fecha.</p>';
+  todos.forEach(function (x, i) {
+    h += '<div class="lin" data-q="' + x.q + '"><span class="pos">' + (i + 1) + 'º</span><span class="nm">' + esc(x.n) + '  (' + x.c + ' certas)</span><span class="pt">' + mil(x.p) + '</span><span class="tp">' + seg(x.t) + '</span></div>';
+  });
+  $('lista').innerHTML = h; $('lista').classList.add('on');
+}
+$('lista').addEventListener('click', function (ev) {
+  var l = ev.target.closest('.lin'); if (!l) return;
+  var q = +l.dataset.q, p = lerPlacar(), x = p.find(function (y) { return y.q === q; });
+  if (x && confirm('Apagar "' + x.n + '" do placar?')) { gravarPlacar(p.filter(function (y) { return y.q !== q; })); abrirLista(); if (S.fase === 'abertura') desenhar(); }
+});
+function exportar() {
+  var csv = '﻿posicao;nome;pontos;certas;tempo_s;horario\n';
+  ordenar(lerPlacar()).forEach(function (x, i) { csv += (i + 1) + ';' + x.n.replace(/;/g, ',') + ';' + x.p + ';' + x.c + ';' + (x.t / 1000).toFixed(1).replace('.', ',') + ';' + new Date(x.q).toLocaleString('pt-BR') + '\n'; });
+  var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'})); a.download = 'placar_luz_do_cerrado.csv'; a.click();
+}
+
+/* ================= estado ================= */
+var SALA = codigo(6);
+var S = {fase: 'abertura', modo: 1, slots: [null, null], fila: [], k: -1, ate: 0, t0: 0, conta: 3, meus: [], resp: {}, pd: [0, 0, 0, 0]};
+var PRES = {};   // celulares da plateia vistos há pouco
+function presentes() {
+  var agora = Date.now();
+  return Object.keys(PRES).filter(function (id) { return agora - PRES[id] < 15000 && !S.slots.some(function (x) { return x && x.id === id; }); }).length;
+}
+var NET = {c: null, b: -1, ok: false};
+function vagas() { return S.slots.slice(0, S.modo); }
+function atual() { return S.fila[S.k]; }
+
+// sorteia sem repetir: uma pergunta só volta depois que todas as outras do mesmo nível já saíram
+function sortear(nivel) {
+  var usadas; try { usadas = JSON.parse(localStorage.getItem('luzcerrado_usadas')) || []; } catch (e) { usadas = []; }
+  var grupo = BANCO.filter(function (x) { return nivel === 'T' ? x.t : (!x.t && x.d === nivel); });
+  var livres = grupo.filter(function (x) { return usadas.indexOf(x.q) < 0 && S.fila.every(function (f) { return f.it !== x; }); });
+  if (!livres.length) {
+    usadas = usadas.filter(function (q) { return !grupo.some(function (x) { return x.q === q; }); });
+    livres = grupo.filter(function (x) { return S.fila.every(function (f) { return f.it !== x; }); });
+  }
+  var it = livres[Math.floor(Math.random() * livres.length)];
+  usadas.push(it.q); try { localStorage.setItem('luzcerrado_usadas', JSON.stringify(usadas)); } catch (e) {}
+  return it;
+}
+function montarFila() {
+  S.fila = [];
+  ROTEIRO.forEach(function (niveis, e) {
+    niveis.forEach(function (nv) {
+      var it = sortear(nv), ops = embaralhar(it.o.map(function (t, i) { return {t: t, ok: i === 0}; }));
+      S.fila.push({e: e, it: it, ops: ops, certa: ops.findIndex(function (o) { return o.ok; })});
+    });
+  });
+  return S.fila;
+}
+
+/* ================= rede ================= */
+function conectar(i) {
+  if (typeof mqtt === 'undefined') return;
+  var c, ok = false;
+  try { c = mqtt.connect(BROKERS[i], {clientId: 'telao_' + codigo(8), keepalive: 30, reconnectPeriod: 2500, connectTimeout: 6000}); } catch (e) { return; }
+  c.on('connect', function () {
+    ok = true; NET.c = c; NET.b = i; NET.ok = true;
+    c.subscribe('luzcerrado26/' + SALA + '/in'); rede(); if (S.fase === 'entrada' || S.fase === 'abertura') desenhar(); publicar();
+  });
+  c.on('close', function () { if (ok) { NET.ok = false; rede(); } });
+  c.on('error', function () {});
+  c.on('message', function (_, m) { try { receber(JSON.parse(m.toString())); } catch (e) {} });
+  setTimeout(function () { if (!ok) { try { c.end(true); } catch (e) {} conectar((i + 1) % BROKERS.length); } }, 7000);
+}
+function rede() { $('rede').textContent = NET.ok ? '' : 'Sem conexão com os celulares (o teclado continua funcionando)'; }
+function publicar() {
+  if (!NET.ok) return;
+  var a = atual(), est = {f: S.fase, m: S.modo, k: S.k, n: S.fila.length,
+    sl: vagas().map(function (j) { return j ? {id: j.id, n: j.n, p: j.p, a: j.a, g: j.g, ok: j.okUlt, nx: j.nx, pos: j.pos, c: j.c, tt: j.tt} : null; })};
+  if (a && (S.fase === 'pergunta' || S.fase === 'resposta')) {
+    est.q = a.it.q; est.o = a.ops.map(function (o) { return o.t; }); est.T = CFG.TEMPO; est.r = Math.max(0, (S.ate - Date.now()) / 1000); est.tes = !!a.it.t; est.d = a.it.d;
+    if (S.fase === 'resposta') est.cor = a.certa;
+  }
+  est.pl = presentes(); est.pr = Object.keys(S.resp).length; if (S.fase === 'resposta') est.pd = S.pd;
+  NET.c.publish('luzcerrado26/' + SALA + '/st', JSON.stringify(est));
+}
+setInterval(publicar, 1500);
+
+function receber(m) {
+  var j;
+  if (m.t === 'h') { PRES[m.id] = Date.now(); return; }
+  if (m.t === 'e') { PRES[m.id] = Date.now(); return reacao(m.e); }
+  if (m.t === 'p') {
+    PRES[m.id] = Date.now();
+    if (S.fase === 'pergunta' && m.k === S.k && !(m.id in S.resp) && m.o >= 0 && m.o < 4 && !S.slots.some(function (x) { return x && x.id === m.id; })) { S.resp[m.id] = m.o; attPlateia(); }
+    return;
+  }
+  if (m.t === 'j' && S.fase === 'entrada') {
+    var i = m.j === 2 ? 1 : 0; if (i >= S.modo) return;
+    var nome = String(m.n || '').trim().slice(0, 14) || ('Jogador ' + (i + 1));
+    if (S.slots[i] && S.slots[i].id !== m.id) return publicar();
+    if (S.slots[1 - i] && S.slots[1 - i].id === m.id) return;
+    if (!S.slots[i]) bip(880, .2, 'triangle', .14);
+    S.slots[i] = novoJog(m.id, nome); checarEntrada(); desenhar(); publicar();
+  } else if (m.t === 'a') {
+    j = S.slots.find(function (x) { return x && x.id === m.id; });
+    if (j && m.k === S.k) responder(j, m.o);
+  } else if (m.t === 'n' && S.fase === 'resposta' && m.k === S.k) {
+    j = S.slots.find(function (x) { return x && x.id === m.id; });
+    if (j) { j.nx = true; if (vagas().every(function (x) { return x.nx; })) S.ate = Math.min(S.ate, Date.now() + 300); publicar(); }
+  } else if (m.t === 'r' && S.fase === 'final') {
+    if (S.slots.some(function (x) { return x && x.id === m.id; })) irAbertura();
+  }
+}
+function novoJog(id, nome) { return {id: id, n: nome, p: 0, a: -1, ta: 0, g: 0, okUlt: false, seq: 0, c: 0, tt: 0, hist: [], nx: false, pos: 0, kb: id.indexOf('kb') === 0}; }
+
+/* ================= fluxo ================= */
+function irAbertura() { S.fase = 'abertura'; S.slots = [null, null]; S.k = -1; S.fila = []; fundo(ABERTURA); desenhar(); publicar(); }
+function irEntrada(modo) {
+  bip(520, .12, 'triangle', .1);
+  S.modo = modo; S.slots = [null, null]; S.fase = 'entrada'; S.ate = Date.now() + 120000; S.meus = []; desenhar(); publicar();
+}
+function checarEntrada() {
+  if (S.fase === 'entrada' && vagas().every(Boolean)) setTimeout(function () {
+    if (S.fase !== 'entrada' || !vagas().every(Boolean)) return;
+    S.fase = 'contagem'; S.conta = 3; S.ate = Date.now() + T_CONTA; S.fila = montarFila(); S.k = -1; desenhar(); publicar(); bip(440, .2, 'square', .06);
+  }, 1500);
+}
+function proxima() {
+  S.k++;
+  if (S.k >= S.fila.length) return terminar();
+  var a = atual(), ant = S.fila[S.k - 1];
+  vagas().forEach(function (j) { j.a = -1; j.g = 0; j.nx = false; });
+  if (!ant || ant.e !== a.e) { S.fase = 'etapa'; S.ate = Date.now() + T_ETAPA; fundo(ETAPAS[a.e]); bip(392, .5, 'sine', .1); bip(587, .7, 'sine', .1, .25); }
+  else abrirPergunta();
+  desenhar(); publicar();
+}
+function abrirPergunta() { S.resp = {}; S.pd = [0, 0, 0, 0]; fundo(ETAPAS[atual().e]); S.fase = 'pergunta'; S.t0 = Date.now(); S.ate = S.t0 + CFG.TEMPO * 1000; S.tique = 6; desenhar(); publicar(); }
+function responder(j, o) {
+  if (S.fase !== 'pergunta' || j.a >= 0 || !(o >= 0 && o < atual().ops.length)) return;
+  j.a = o; j.ta = Date.now() - S.t0; bip(700, .08, 'sine', .1);
+  if (vagas().every(function (x) { return x.a >= 0; })) S.ate = Math.min(S.ate, Date.now() + 500);
+  desenhar(); publicar();
+}
+function revelar() {
+  var a = atual(), algum = false;
+  vagas().forEach(function (j) {
+    var certo = j.a === a.certa;
+    if (j.a < 0) j.ta = CFG.TEMPO * 1000;
+    j.tt += j.ta; j.okUlt = certo; j.hist.push(certo ? 1 : 0);
+    if (certo) {
+      j.seq++; j.c++; algum = true;
+      j.g = CFG.PONTOS[a.it.d] + Math.round(CFG.BONUS_RAPIDEZ * Math.max(0, 1 - j.ta / (CFG.TEMPO * 1000))) + (j.seq >= 3 ? CFG.BONUS_SEQUENCIA : 0);
+      if (a.it.t) j.g *= 2;
+      j.p += j.g;
+    } else { j.seq = 0; j.g = 0; }
+  });
+  if (algum) somCerto(); else somErro();
+  S.pd = [0, 0, 0, 0]; Object.keys(S.resp).forEach(function (id) { S.pd[S.resp[id]]++; });
+  fundo(imagemDe(a)); if (algum && a.it.t) confete(60);
+  S.fase = 'resposta'; S.ate = Date.now() + CFG.TEMPO_SABIA * 1000; desenhar(); publicar();
+}
+function terminar() {
+  var p = lerPlacar(), agora = Date.now();
+  S.meus = [];
+  vagas().forEach(function (j, i) { var q = agora + i; S.meus.push(q); j.q = q; p.push({n: j.n, p: j.p, c: j.c, t: j.tt, q: q}); });
+  ordenar(p); gravarPlacar(p);
+  vagas().forEach(function (j) { j.pos = p.findIndex(function (x) { return x.q === j.q; }) + 1; });
+  S.fase = 'final'; S.ate = Date.now() + 45000; fundo(ABERTURA); somFim(); confete(150); desenhar(); publicar();
+}
+setInterval(function () {
+  var agora = Date.now(), resta = S.ate - agora;
+  if (S.fase === 'pergunta') {
+    var fr = Math.max(0, resta / (CFG.TEMPO * 1000)), s = Math.ceil(resta / 1000);
+    $('fio').style.transform = 'scaleX(' + fr + ')'; $('fio').classList.toggle('fim', s <= 5);
+    var el = $('seg'); if (el) el.textContent = Math.max(0, s);
+    if (s < S.tique && s > 0) { S.tique = s; bip(980, .06, 'square', .05); }
+    if (resta <= 0) revelar();
+  } else if (S.fase === 'contagem' && resta <= 0) {
+    S.conta--; if (S.conta <= 0) proxima(); else { S.ate = agora + T_CONTA; desenhar(); bip(440, .2, 'square', .06); }
+  } else if (S.fase === 'etapa' && resta <= 0) abrirPergunta();
+  else if (S.fase === 'resposta' && resta <= 0) proxima();
+  else if ((S.fase === 'final' || S.fase === 'entrada') && resta <= 0) irAbertura();
+}, 100);
+
+/* ================= desenho ================= */
+var bgAtual = 0, fotoAtual = '';
+function fundo(f) {
+  $('credito').textContent = (f.nome ? f.nome + '. ' : '') + 'Foto: ' + f.cred + ', via Wikimedia Commons';
+  if (f.foto === fotoAtual) return; fotoAtual = f.foto;
+  var img = new Image();
+  img.onload = function () {
+    if (fotoAtual !== f.foto) return;
+    var novo = $(bgAtual ? 'bgA' : 'bgB'), velho = $(bgAtual ? 'bgB' : 'bgA');
+    novo.style.backgroundImage = 'url("' + f.foto + '")'; novo.classList.add('on'); velho.classList.remove('on'); bgAtual = 1 - bgAtual;
+  };
+  img.src = f.foto;
+}
+function enderecoCelular(j) {
+  var base = CFG.ENDERECO || (location.protocol.indexOf('http') === 0 ? location.href.split('?')[0].replace(/[^\/]*$/, '') : '');
+  if (!base || !NET.ok) return '';
+  return base.replace(/\/?$/, '/') + 'c.html?s=' + SALA + '&j=' + j + '&b=' + NET.b;
+}
+function qr(url) { var q = qrcode(0, 'M'); q.addData(url); q.make(); return q.createSvgTag({cellSize: 8, margin: 2, scalable: true}); }
+function imagemDe(a) { return (typeof IMG !== 'undefined' && IMG[a.it.i]) || ETAPAS[a.e]; }
+function luzes(j) {
+  var h = '<div class="luzes">';
+  for (var i = 0; i < S.fila.length; i++) h += '<i class="' + (j.hist[i] === 1 ? 's' : j.hist[i] === 0 ? 'n' : '') + '"></i>';
+  return h + '</div>';
+}
+function placas() {
+  return '<div class="jogs">' + vagas().map(function (j, i) {
+    var st = S.fase === 'pergunta' ? (j.a >= 0 ? 'respondeu em ' + seg(j.ta) : 'pensando...') : S.fase === 'resposta' ? (j.a < 0 ? 'não respondeu' : j.okUlt ? 'acertou em ' + seg(j.ta) + (j.seq >= 3 ? ' <span class="seq">' + j.seq + ' seguidas!</span>' : '') : 'errou') : '';
+    var g = S.fase === 'resposta' ? '<span class="ganho' + (j.g ? '' : ' zero') + '">' + (j.g ? '+' + mil(j.g) : '+0') + '</span>' : '';
+    return '<div class="jog' + (i ? ' dois' : '') + (j.a >= 0 && S.fase === 'pergunta' ? ' foi' : '') + '">' + g + '<div class="nm">' + esc(j.n) + '</div><div class="num">' + mil(j.p) + '</div><div class="st">' + st + '&nbsp;</div>' + luzes(j) + '</div>';
+  }).join('') + '</div>';
+}
+function textoPlateia() {
+  var n = presentes(), r = Object.keys(S.resp).length;
+  if (!n) return 'Aponte a câmera e responda também';
+  return n + ' na plateia' + (S.fase === 'pergunta' ? ', ' + r + (r === 1 ? ' respondeu' : ' responderam') : '');
+}
+function attPlateia() { var el = $('platn'); if (el) el.textContent = textoPlateia(); }
+function plateiaHtml(txt) {
+  var url = enderecoCelular(0); if (!url) return '';
+  return '<div class="plat"><div class="q">' + qr(url) + '</div><div><b>' + txt + '</b><span id="platn">' + textoPlateia() + '</span></div></div>';
+}
+var ultCh = '';
+function desenhar() {
+  var h = '', a = atual(), f = S.fase;
+  document.body.classList.toggle('forte', f === 'entrada' || f === 'final');
+  document.body.classList.toggle('rev', f === 'resposta');
+  var ch = f + '|' + S.k; $('tela').classList.toggle('entra', ch !== ultCh); ultCh = ch;
+  $('fio').classList.toggle('on', f === 'pergunta');
+  if (f === 'abertura') {
+    h = '<div class="abertura"><div><h1 class="titulo sombra">Luz do<span>Cerrado</span></h1>' +
+      '<p class="chamada sombra">Dez perguntas sobre o Tocantins, o Cerrado e a luz, das fáceis às difíceis. Você responde pelo seu celular e entra no placar da feira.</p>' +
+      '<div class="modos"><button class="modo" data-m="1">Jogar sozinho<small>tecla 1</small></button><button class="modo b" data-m="2">Jogar em dupla<small>tecla 2</small></button></div>' + plateiaHtml('Só quer assistir? Entre na plateia e responda junto') + '</div>' +
+      htmlPlacar(null, CFG.PLACAR_NA_TELA) + '</div>';
+  } else if (f === 'entrada') {
+    h = '<div class="entrada' + (S.modo === 2 ? ' dupla' : '') + '">';
+    for (var i = 0; i < S.modo; i++) {
+      var j = S.slots[i], url = enderecoCelular(i + 1);
+      h += '<div class="lado"><h2>' + (S.modo === 2 ? 'Jogador ' + (i + 1) : 'Aponte a câmera do celular') + '</h2>';
+      if (j) h += '<p>&nbsp;</p><div class="chegou"><b>' + esc(j.n) + '</b><span>' + (j.kb ? 'no teclado' : 'entrou pelo celular') + '</span></div>';
+      else if (url) h += '<p>' + (S.modo === 2 ? 'Aponte a câmera do celular para este código' : 'Leia o código, escreva seu nome e responda por lá') + '</p><div class="qr">' + qr(url) + '</div>';
+      else h += '<p>' + (NET.ok ? 'O jogo precisa estar publicado na internet para o celular entrar.' : 'Conectando com a internet...') + '<br>Aperte T para jogar no teclado.</p>';
+      h += '</div>';
+    }
+    h += '</div><div class="rodape">Sem internet no celular? Aperte T e jogue no teclado. Esc volta para o início.</div>';
+  } else if (f === 'contagem') {
+    h = '<div class="conta"><span>' + S.conta + '</span></div>';
+  } else if (f === 'etapa') {
+    var et = ETAPAS[a.e];
+    h = '<div class="etapa sombra"><div class="n">Parada ' + (a.e + 1) + ' de ' + ETAPAS.length + '</div><div class="nomeEtapa">' + esc(et.nome) + '</div><div class="bl">' + esc(et.blurb) + '</div></div>';
+  } else if (f === 'pergunta' || f === 'resposta') {
+    var rev = f === 'resposta', tot = S.pd[0] + S.pd[1] + S.pd[2] + S.pd[3];
+    h = '<div class="topo"><div class="onde sombra"><b>' + esc(ETAPAS[a.e].nome) + '</b><br>Pergunta ' + (S.k + 1) + ' de ' + S.fila.length + '</div>' +
+      (rev ? '' : '<div class="seg sombra" id="seg">' + CFG.TEMPO + '</div>') + '<div class="lado2">' + plateiaHtml('Plateia, jogue junto') + placas() + '</div></div><div class="corpo">' +
+      (rev ? '' : '<div class="tes n' + a.it.d + (a.it.t ? ' t' : '') + '">' + (a.it.t ? 'Pergunta do tesouro: vale o dobro' : NIVEL[a.it.d] + ', vale ' + CFG.PONTOS[a.it.d] + ' + rapidez') + '</div>') +
+      '<div class="perg sombra' + (rev ? ' peq' : '') + '">' + esc(a.it.q) + '</div><div class="ops' + (rev ? ' uma' : '') + '">' +
+      a.ops.map(function (o, i) {
+        if (rev && !o.ok) return '';
+        return '<div class="op' + (rev ? ' certa' : '') + '"><i>' + 'ABCD'[i] + '</i><span>' + esc(o.t) + '</span>' + (rev && tot ? '<em>' + Math.round(100 * S.pd[i] / tot) + '% da plateia acertou</em>' : '') + '</div>';
+      }).join('') + '</div>' +
+      (rev ? '<div class="sabia sombra"><b>Você sabia?</b> ' + esc(a.it.e) + '</div>' : '') + '</div>';
+  } else if (f === 'final') {
+    var js = vagas(), venc = S.modo === 2 ? (js[0].p === js[1].p ? (js[0].tt === js[1].tt ? -1 : (js[0].tt < js[1].tt ? 0 : 1)) : (js[0].p > js[1].p ? 0 : 1)) : 0;
+    h = '<div class="final"><div><div class="fimTit sombra">' + (S.modo === 2 ? (venc < 0 ? 'Empate!' : esc(js[venc].n) + ' venceu a dupla') : 'Fim da viagem') + '</div>' +
+      js.map(function (j, i) {
+        return '<div class="res sombra' + (i === venc ? ' venc' : '') + '"><div class="quem">' + esc(j.n) + '</div><div class="pts">' + mil(j.p) + '</div><div class="det"><b>' + j.pos + 'º lugar</b> no placar. ' +
+          j.c + ' de ' + S.fila.length + ' certas, ' + seg(j.tt) + ' respondendo.</div></div>';
+      }).join('') + '</div>' + htmlPlacar(null, 6, S.meus) + '</div>';
+  }
+  $('tela').innerHTML = h;
+}
+$('tela').addEventListener('click', function (ev) { var b = ev.target.closest('.modo'); if (b) irEntrada(+b.dataset.m); });
+
+/* ================= teclado ================= */
+function teclado() {
+  for (var i = 0; i < S.modo; i++) if (!S.slots[i]) {
+    var n = prompt('Nome do jogador ' + (i + 1) + ' (teclado: ' + (i ? 'teclas 7, 8, 9 e 0' : 'teclas 1, 2, 3 e 4') + ' = A, B, C e D)');
+    if (n === null) return;
+    S.slots[i] = novoJog('kb' + i, n.trim().slice(0, 14) || 'Jogador ' + (i + 1));
+  }
+  desenhar(); publicar(); checarEntrada();
+}
+document.addEventListener('keydown', function (ev) {
+  var k = ev.key, f = S.fase;
+  if ($('lista').classList.contains('on')) {
+    if (k === 'Escape' || k === 'l' || k === 'L') $('lista').classList.remove('on');
+    else if (k === 'e' || k === 'E') exportar();
+    else if (k === 'Delete' && ev.shiftKey && confirm('Apagar TODO o placar? Não dá para desfazer.')) { gravarPlacar([]); abrirLista(); if (f === 'abertura') desenhar(); }
+    return;
+  }
+  if (k === 'm' || k === 'M') { mudo = !mudo; return; }
+  if (k === 'f' || k === 'F') { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); return; }
+  if (f === 'abertura') {
+    if (k === '1' || k === '2') irEntrada(+k);
+    else if (k === 'l' || k === 'L') abrirLista();
+  } else if (f === 'entrada') {
+    if (k === 't' || k === 'T') teclado();
+    else if (k === 'Escape') irAbertura();
+  } else if (f === 'pergunta') {
+    var i1 = '1234'.indexOf(k), i2 = '7890'.indexOf(k);
+    if (i1 >= 0 && S.slots[0] && S.slots[0].kb) responder(S.slots[0], i1);
+    if (i2 >= 0 && S.slots[1] && S.slots[1].kb) responder(S.slots[1], i2);
+    if (k === 'Escape' && confirm('Encerrar esta partida?')) irAbertura();
+  } else if (f === 'resposta') {
+    if (k === 'Enter' || k === ' ') S.ate = Date.now();
+    if (k === 'Escape' && confirm('Encerrar esta partida?')) irAbertura();
+  } else if (f === 'final' && (k === 'Enter' || k === ' ' || k === 'Escape')) irAbertura();
+});
+
+/* ================= grãos de luz ================= */
+(function () {
+  var cv = $('motes'), cx = cv.getContext('2d'), W, H, ps = [];
+  function tam() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+  tam(); addEventListener('resize', tam);
+  for (var i = 0; i < 46; i++) ps.push({x: Math.random(), y: Math.random(), r: .6 + Math.random() * 1.8, v: .004 + Math.random() * .012, f: Math.random() * 6});
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  (function laco(t) {
+    cx.clearRect(0, 0, W, H);
+    ps.forEach(function (p) {
+      p.y -= p.v * .016; if (p.y < -.05) { p.y = 1.05; p.x = Math.random(); }
+      var x = (p.x + Math.sin(t / 2600 + p.f) * .012) * W, y = p.y * H, r = p.r * W / 900, al = .25 + .45 * Math.abs(Math.sin(t / 900 + p.f));
+      var g = cx.createRadialGradient(x, y, 0, x, y, r * 5);
+      g.addColorStop(0, 'rgba(255,236,170,' + al + ')'); g.addColorStop(1, 'rgba(255,236,170,0)');
+      cx.fillStyle = g; cx.beginPath(); cx.arc(x, y, r * 5, 0, 7); cx.fill();
+    });
+    requestAnimationFrame(laco);
+  })(0);
+})();
+
+/* ================= reações da plateia, confete e vitrine ================= */
+var EMOS = ['👏', '😮', '🔥', '😂', '❤️'];
+function reacao(i) {
+  var fx = $('fx'); if (fx.children.length > 70) return;
+  var e = document.createElement('span'); e.className = 'emo'; e.textContent = EMOS[i] || EMOS[0];
+  e.style.left = (4 + Math.random() * 88) + '%'; e.style.setProperty('--dx', (Math.random() * 16 - 8) + 'rem'); e.style.setProperty('--rot', (Math.random() * 60 - 30) + 'deg');
+  fx.appendChild(e); setTimeout(function () { e.remove(); }, 3500);
+}
+function confete(n) {
+  var fx = $('fx'), cores = ['#f0b63c', '#ffe9a8', '#3fa877', '#f6ead2', '#d9512f'];
+  for (var i = 0; i < n; i++) {
+    var c = document.createElement('span'); c.className = 'conf';
+    c.style.left = (Math.random() * 100) + '%'; c.style.background = cores[i % cores.length];
+    c.style.animationDuration = (2.2 + Math.random() * 2.4) + 's'; c.style.animationDelay = (Math.random() * .9) + 's'; c.style.setProperty('--dx', (Math.random() * 20 - 10) + 'rem');
+    fx.appendChild(c); (function (el) { setTimeout(function () { el.remove(); }, 6000); })(c);
+  }
+}
+setInterval(attPlateia, 1000);
+// vitrine: na abertura, as fotos vão passando para chamar quem está por perto
+var vitrine = 0;
+setInterval(function () {
+  if (S.fase !== 'abertura' || typeof IMG === 'undefined') return;
+  var ks = Object.keys(IMG); vitrine = (vitrine + 1) % (ks.length + 1);
+  fundo(vitrine ? IMG[ks[vitrine - 1]] : ABERTURA);
+}, 7000);
+
+ETAPAS.forEach(function (e) { new Image().src = e.foto; });   // deixa as fotos carregadas
+irAbertura(); rede(); conectar(0);
+</script>
+</body>
+</html>

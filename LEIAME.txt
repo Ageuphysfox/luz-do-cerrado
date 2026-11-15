@@ -1,0 +1,40 @@
+LUZ DO CERRADO - quiz do Grupo 2 (FECITEG 2026)
+
+COMO ABRIR NA FEIRA
+1. No notebook do estande, abra no Chrome:
+   https://ageuphysfox.github.io/luz-do-cerrado/
+2. Aperte F (tela cheia). O notebook e os celulares precisam de internet.
+3. Escolha "Jogar sozinho" ou "Jogar em dupla". Aparece o QR (um por jogador).
+4. O visitante aponta a câmera, escreve o nome e responde pelo celular.
+
+IMPORTANTE: o placar fica guardado NESTE navegador deste notebook.
+Use sempre o mesmo notebook, o mesmo Chrome e o mesmo endereço o dia todo.
+Não use janela anônima e não limpe o histórico.
+
+TECLAS DO TELÃO
+1 / 2 ........ jogar sozinho / em dupla
+T ............ (na tela do QR) jogar no teclado, sem celular
+               jogador 1: teclas 1 2 3 4 = A B C D     jogador 2: teclas 7 8 9 0
+Enter ........ pula o "Você sabia?"
+Esc .......... volta ao início
+L ............ placar completo (clique num nome para apagar; E exporta planilha;
+               Shift+Delete apaga tudo; faça isso antes de a feira começar)
+F / M ........ tela cheia / som
+
+SE A INTERNET CAIR
+Abra o arquivo index.html desta pasta e jogue pelo teclado (tecla T).
+Atenção: aberto assim, o placar é outro (não junta com o do endereço da internet).
+
+PERGUNTAS
+Estão em perguntas.js (114 perguntas: fáceis, médias, difíceis e as do tesouro).
+Cada partida tem 10: 3 fáceis, 4 médias, 2 difíceis e 1 do tesouro (vale o dobro).
+Pontos: fácil 500, média 700, difícil 900, mais até 400 pela rapidez
+e mais 200 a partir de 3 acertos seguidos. Empate: ganha o menor tempo.
+Depois de mudar qualquer arquivo, é preciso publicar de novo no GitHub.
+
+FOTOS (Wikimedia Commons)
+abertura: Ana Cláudia Matias A. Capistrano, CC BY-SA 4.0
+jalapao e cachoeira: Marcel Favery, CC BY-SA 4.0
+bananal (rio Javaés): Arthur to, domínio público
+palmas (Praia da Graciosa): Anurb01, CC BY-SA 4.0
+noite (Via Láctea sobre Corumbá): Paulomelo.adv, CC BY-SA 4.0
