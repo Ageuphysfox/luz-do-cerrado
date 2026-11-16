@@ -58,7 +58,7 @@ body.mural #mural { opacity: 1; }
 .placar { background: rgba(21,16,10,.74); backdrop-filter: blur(10px); border-radius: 1.6rem; padding: 1.8rem 2rem; border-top: .3rem solid var(--ouro); }
 .placar h2 { font-family: Fraunces, Georgia, serif; font-size: 2.3rem; font-weight: 700; margin-bottom: .2rem; }
 .placar .sub { font-size: 1.15rem; opacity: .7; margin-bottom: 1rem; }
-.lin { display: grid; grid-template-columns: 2.6rem 1fr auto 6.2rem; gap: .8rem; align-items: baseline; padding: .5rem .6rem; font-size: 1.65rem; border-radius: .6rem; }
+.lin { display: grid; grid-template-columns: 2.6rem 1fr auto 5.6rem; gap: .8rem; align-items: baseline; padding: .5rem .6rem; font-size: 1.65rem; border-radius: .6rem; }
 .lin + .lin { border-top: 1px solid rgba(246,234,210,.13); }
 .lin .pos { opacity: .6; font-weight: 800; }
 .lin .nm { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -264,9 +264,12 @@ var CFG = {
   ENDERECO: 'https://ageuphysfox.github.io/luz-do-cerrado/',              // endereço publicado da pasta do jogo (ex.: https://usuario.github.io/luz-do-cerrado/). Vazio = usa o endereço desta página
   TEMPO: 20,                 // segundos para responder
   TEMPO_SABIA: 9,            // segundos mostrando a resposta e o "Você sabia?"
-  PONTOS: {1: 500, 2: 700, 3: 900},   // pontos por acerto: fácil, média, difícil
-  BONUS_RAPIDEZ: 400,        // bônus máximo para quem responde na hora (nos desafios de foto vale o dobro)
-  BONUS_SEQUENCIA: 200,      // bônus a partir de 3 acertos seguidos
+  // A nota da partida vai de 0 a 100. Quanto vale cada rodada (a soma das 10 rodadas do ROTEIRO precisa dar 100):
+  PONTOS: {1: 8, 2: 10, 3: 12},   // fácil, média, difícil (duas de cada)
+  PONTOS_FOTO: 8,            // cada um dos três desafios de foto
+  PONTOS_TESOURO: 16,        // pergunta do tesouro
+  PARTE_RAPIDEZ: 0.4,        // 40% do valor da rodada depende da rapidez; os outros 60% são do acerto
+  FOLGA: 3,                  // segundos iniciais em que a rapidez ainda vale tudo (tempo de ler a pergunta)
   PLACAR_NA_TELA: 8,         // quantos nomes aparecem no placar da abertura
   RELAMPAGO: true,           // na abertura, roda sozinho um "desafio relâmpago" para quem está passando
   RELAMPAGO_PAUSA: 14        // segundos entre um desafio relâmpago e outro
@@ -281,7 +284,7 @@ var ETAPAS = [
   {nome: 'Pôr do sol em Palmas', blurb: 'O céu pega fogo na Praia da Graciosa.', foto: 'fotos/palmas.jpg', cred: 'Anurb01, CC BY-SA 4.0'},
   {nome: 'Noite de estrelas', blurb: 'Longe das cidades, a Via Láctea aparece inteira.', foto: 'fotos/noite.jpg', cred: 'Paulomelo.adv, CC BY-SA 4.0'}
 ];
-// cada parada tem duas rodadas: 1 fácil, 2 média, 3 difícil, 'T' pergunta do tesouro (vale o dobro),
+// cada parada tem duas rodadas: 1 fácil, 2 média, 3 difícil, 'T' pergunta do tesouro (a que vale mais),
 // 'L' desafio da lanterna, 'Z' desafio do zoom, 'M' desafio do mosaico (os três usam fotos)
 var ROTEIRO = [[1, 'L'], [1, 2], ['Z', 2], [3, 'M'], [3, 'T']];
 var NIVEL = {1: 'Fácil', 2: 'Média', 3: 'Difícil'};
@@ -289,7 +292,7 @@ var DESAFIO = {
   L: {nome: 'Desafio da lanterna', bl: 'Tem alguma coisa no escuro. Quem reconhecer primeiro ganha mais pontos.', q: 'O que a lanterna está iluminando?'},
   Z: {nome: 'Desafio do zoom', bl: 'A foto começa bem de perto e vai abrindo. Responda antes que fique fácil.', q: 'A foto está abrindo. O que é?'},
   M: {nome: 'Desafio do mosaico', bl: 'Os quadrados caem um a um. O que está escondido atrás deles?', q: 'O que está escondido atrás dos quadrados?'},
-  T: {nome: 'Pergunta do tesouro', bl: 'A última vale o dobro. Ainda dá para virar o jogo.'}
+  T: {nome: 'Pergunta do tesouro', bl: 'A última é a que vale mais. Ainda dá para virar o jogo.'}
 };
 // fotos dos desafios: chave da imagem (imagens.js), grupo, nome que vira alternativa e curiosidade
 var FOTOS = [
@@ -318,7 +321,8 @@ var OUTROS = {b: ['Tatu-canastra', 'Jaguatirica', 'Quati', 'Carcará', 'Raposa-d
 /* ================= utilidades ================= */
 var $ = function (id) { return document.getElementById(id); };
 function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]; }); }
-function mil(n) { return Number(n).toLocaleString('pt-BR'); }
+function mil(n) { return (Math.round(n * 10) / 10).toFixed(1).replace('.', ','); }   // nota com uma casa decimal
+function valor(it) { return it.t ? CFG.PONTOS_TESOURO : it.foto ? CFG.PONTOS_FOTO : CFG.PONTOS[it.d]; }
 function seg(ms) { return (ms / 1000).toFixed(1).replace('.', ',') + ' s'; }
 function embaralhar(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
 function codigo(n) { var s = '', c = 'abcdefghjkmnpqrstuvwxyz23456789'; for (var i = 0; i < n; i++) s += c[Math.floor(Math.random() * c.length)]; return s; }
@@ -347,13 +351,13 @@ function somRufo(ms) { for (var t = 0; t < ms / 1000; t += .07) bip(150 + t * 60
 function somChamada() { [392, 523, 659, 784].forEach(function (f, i) { bip(f, .22, 'square', .05, i * .09); }); }
 
 /* ================= placar (fica guardado neste navegador) ================= */
-var CHAVE = 'luzcerrado_placar_v1';
+var CHAVE = 'luzcerrado_placar_v2';
 function lerPlacar() { try { return JSON.parse(localStorage.getItem(CHAVE)) || []; } catch (e) { return []; } }
 function gravarPlacar(p) { try { localStorage.setItem(CHAVE, JSON.stringify(p)); } catch (e) {} }
 function ordenar(p) { return p.sort(function (a, b) { return b.p - a.p || a.t - b.t || a.q - b.q; }); }
 function htmlPlacar(lista, n, meus) {
   var todos = ordenar(lerPlacar()), h = '<div class="placar"><h2>Placar da feira</h2><div class="sub">' +
-    (todos.length ? todos.length + (todos.length > 1 ? ' pessoas já jogaram' : ' pessoa já jogou') + '. Empate? Ganha quem respondeu mais rápido.' : 'Pontos e tempo de resposta') + '</div>';
+    (todos.length ? todos.length + (todos.length > 1 ? ' pessoas já jogaram' : ' pessoa já jogou') + '. Nota de 0 a 100: acertar e ser rápido.' : 'Nota de 0 a 100 e tempo de resposta') + '</div>';
   if (!todos.length) h += '<div class="vazio">Ninguém jogou ainda.<br>O primeiro nome do placar pode ser o seu.</div>';
   var mostrados = todos.slice(0, n);
   (meus || []).forEach(function (q) { var i = todos.findIndex(function (x) { return x.q === q; }); if (i >= n) mostrados.push(todos[i]); });
@@ -383,8 +387,8 @@ $('lista').addEventListener('click', function (ev) {
   if (x && confirm('Apagar "' + x.n + '" do placar?')) { gravarPlacar(p.filter(function (y) { return y.q !== q; })); abrirLista(); if (S.fase === 'abertura') desenhar(); }
 });
 function exportar() {
-  var csv = '﻿posicao;nome;pontos;certas;tempo_s;horario\n';
-  ordenar(lerPlacar()).forEach(function (x, i) { csv += (i + 1) + ';' + x.n.replace(/;/g, ',') + ';' + x.p + ';' + x.c + ';' + (x.t / 1000).toFixed(1).replace('.', ',') + ';' + new Date(x.q).toLocaleString('pt-BR') + '\n'; });
+  var csv = '﻿posicao;nome;nota;certas;tempo_s;horario\n';
+  ordenar(lerPlacar()).forEach(function (x, i) { csv += (i + 1) + ';' + x.n.replace(/;/g, ',') + ';' + mil(x.p) + ';' + x.c + ';' + (x.t / 1000).toFixed(1).replace('.', ',') + ';' + new Date(x.q).toLocaleString('pt-BR') + '\n'; });
   var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'})); a.download = 'placar_luz_do_cerrado.csv'; a.click();
 }
 
@@ -545,9 +549,9 @@ function revelar() {
     j.tt += j.ta; j.okUlt = certo; j.hist.push(certo ? 1 : 0);
     if (certo) {
       j.seq++; j.c++;
-      j.g = CFG.PONTOS[a.it.d] + Math.round((a.it.foto ? 2 : 1) * CFG.BONUS_RAPIDEZ * Math.max(0, 1 - j.ta / (CFG.TEMPO * 1000))) + (j.seq >= 3 ? CFG.BONUS_SEQUENCIA : 0);
-      if (a.it.t) j.g *= 2;
-      j.p += j.g;
+      var rapidez = Math.max(0, Math.min(1, 1 - (j.ta - CFG.FOLGA * 1000) / ((CFG.TEMPO - CFG.FOLGA) * 1000)));
+      j.g = Math.round(valor(a.it) * (1 - CFG.PARTE_RAPIDEZ + CFG.PARTE_RAPIDEZ * rapidez) * 10) / 10;
+      j.p = Math.round((j.p + j.g) * 10) / 10;
     } else { j.seq = 0; j.g = 0; }
   });
   S.pd = [0, 0, 0, 0]; Object.keys(S.resp).forEach(function (id) { S.pd[S.resp[id]]++; });
@@ -700,7 +704,7 @@ function desenhar() {
   } else if (f === 'abertura') {
     creditar({cred: 'créditos na tecla C'});
     h = '<div class="abertura"><div><h1 class="titulo sombra">Luz do<span>Cerrado</span></h1>' +
-      '<p class="chamada sombra">Perguntas e desafios de foto sobre o Tocantins, o Cerrado e a luz. Você responde pelo celular e entra no placar da feira.</p>' +
+      '<p class="chamada sombra">Perguntas e desafios de foto sobre o Tocantins, o Cerrado e a luz. Responda pelo celular: a nota vai de 0 a 100 e a rapidez também conta.</p>' +
       '<div class="modos"><button class="modo" data-m="1">Jogar sozinho<small>tecla 1</small></button><button class="modo b" data-m="2">Jogar em dupla<small>tecla 2</small></button></div>' + plateiaHtml('Só quer assistir? Entre na plateia e responda junto') + '</div>' +
       htmlPlacar(null, CFG.PLACAR_NA_TELA) + '</div>';
   } else if (f === 'entrada') {
@@ -725,7 +729,7 @@ function desenhar() {
   } else if (f === 'pergunta' || f === 'resposta') {
     var resp = f === 'resposta', marc = resp && S.rev > 0, fim = resp && S.rev === 2, tot = S.pd[0] + S.pd[1] + S.pd[2] + S.pd[3], ft = a.it.foto;
     var quem = function (i) { return marc ? vagas().map(function (j, n) { return j.a === i ? '<u class="' + (n ? 'd' : '') + '">' + esc(j.n) + '</u>' : ''; }).join('') : ''; };
-    var chip = '<div class="tes n' + a.it.d + (a.it.t || ft ? ' t' : '') + '">' + (a.it.t ? 'Pergunta do tesouro: vale o dobro' : ft ? DESAFIO[ft].nome + ': quanto antes, mais pontos' : NIVEL[a.it.d] + ', vale ' + CFG.PONTOS[a.it.d] + ' + rapidez') + '</div>';
+    var chip = '<div class="tes n' + a.it.d + (a.it.t || ft ? ' t' : '') + '">' + (a.it.t ? 'Pergunta do tesouro: vale até ' + valor(a.it) + ' pontos' : ft ? DESAFIO[ft].nome + ': até ' + valor(a.it) + ' pontos' : NIVEL[a.it.d] + ': até ' + valor(a.it) + ' pontos, quanto antes melhor') + '</div>';
     var ops = a.ops.map(function (o, i) {
       if (fim && !o.ok && !ft) return '';
       return '<div class="op' + (marc ? (o.ok ? ' certa' : ' fora') : resp ? ' susp' : '') + '"><i>' + 'ABCD'[i] + '</i><span>' + esc(o.t) + '</span>' + quem(i) + (fim && o.ok && tot ? '<em>' + Math.round(100 * S.pd[i] / tot) + '% da plateia acertou</em>' : '') + '</div>';
@@ -739,7 +743,7 @@ function desenhar() {
     var js = vagas(), venc = S.modo === 2 ? (js[0].p === js[1].p ? (js[0].tt === js[1].tt ? -1 : (js[0].tt < js[1].tt ? 0 : 1)) : (js[0].p > js[1].p ? 0 : 1)) : 0;
     h = '<div class="final"><div><div class="fimTit sombra">' + (S.modo === 2 ? (venc < 0 ? 'Empate!' : esc(js[venc].n) + ' venceu a dupla') : 'Fim da viagem') + '</div>' +
       js.map(function (j, i) {
-        return '<div class="res sombra' + (i === venc ? ' venc' : '') + '"><div class="selo">' + j.pos + 'º<small>no placar</small></div><div class="quem">' + esc(j.n) + '</div><div class="pts">' + mil(j.p) + '</div><div class="det">' +
+        return '<div class="res sombra' + (i === venc ? ' venc' : '') + '"><div class="selo">' + j.pos + 'º<small>no placar</small></div><div class="quem">' + esc(j.n) + '</div><div class="pts">' + mil(j.p) + '</div><div class="det">Nota de 0 a 100. ' +
           j.c + ' de ' + S.fila.length + ' certas, ' + seg(j.tt) + ' respondendo.</div></div>';
       }).join('') + '</div>' + htmlPlacar(null, 6, S.meus) + '</div>';
   }
@@ -754,7 +758,7 @@ function contar(el, de, para, ms) {
   var t0 = performance.now();
   (function passo(t) {
     if (!el.isConnected) return;
-    var fr = Math.min(1, (t - t0) / ms); el.textContent = mil(Math.round(de + (para - de) * (1 - Math.pow(1 - fr, 3))));
+    var fr = Math.min(1, (t - t0) / ms); el.textContent = mil(de + (para - de) * (1 - Math.pow(1 - fr, 3)));
     if (fr < 1) requestAnimationFrame(passo);
   })(t0);
 }

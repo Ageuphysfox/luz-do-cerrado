@@ -36,11 +36,12 @@ Atenção: aberto assim, o placar é outro (não junta com o do endereço da int
 
 PERGUNTAS
 Estão em perguntas.js (114 perguntas: fáceis, médias, difíceis e as do tesouro).
-Cada partida sorteia 2 fáceis, 2 médias, 2 difíceis e 1 do tesouro (vale o dobro),
-mais 3 desafios de foto (as fotos e curiosidades ficam na lista FOTOS do index.html).
-Pontos: fácil 500, média 700, difícil 900, desafio de foto 700; mais até 400 pela
-rapidez (até 800 nos desafios de foto) e mais 200 a partir de 3 acertos seguidos.
-Empate: ganha o menor tempo.
+Cada partida sorteia 2 fáceis, 2 médias, 2 difíceis e 1 do tesouro, mais 3 desafios
+de foto (as fotos e curiosidades ficam na lista FOTOS do index.html).
+NOTA DE 0 A 100: fácil vale 8, média 10, difícil 12, desafio de foto 8 e tesouro 16.
+Em cada rodada, 60% do valor é do acerto e 40% é da rapidez (nos 3 primeiros segundos
+a rapidez ainda vale tudo). Quem erra ou não responde leva zero na rodada.
+Empate na nota: ganha o menor tempo total de resposta.
 Depois de mudar qualquer arquivo, é preciso publicar de novo no GitHub.
 
 FOTOS (Wikimedia Commons)

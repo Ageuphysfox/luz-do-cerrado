@@ -58,7 +58,7 @@ var QS = new URLSearchParams(location.search), SALA = QS.get('s') || '', B = Mat
 var PLATEIA = QS.get('j') === '0', VAGA = QS.get('j') === '2' ? 2 : 1;
 var app = document.getElementById('app');
 function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]; }); }
-function mil(n) { return Number(n).toLocaleString('pt-BR'); }
+function mil(n) { return (Math.round(n * 10) / 10).toFixed(1).replace('.', ','); }
 function guarda(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
 var ID = guarda('luz_id'); if (!ID) { ID = 'c' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36); guarda('luz_id', ID); }
 
@@ -111,7 +111,7 @@ function htmlPergunta(pontos, minha, rev) {
   var respondi = minha >= 0;
   var h = '<div class="topo"><span>Pergunta ' + (E.k + 1) + ' de ' + E.n + '</span><b>' + pontos + '</b></div>' +
     '<div class="barra"><i id="barra"' + (rev ? ' style="transform:scaleX(0)"' : '') + '></i></div>' +
-    '<div><span class="tes">' + (E.rot ? E.rot : E.tes ? 'Tesouro: vale o dobro' : ({1: 'Fácil', 2: 'Média', 3: 'Difícil'})[E.d] || '') + '</span></div><div class="perg">' + esc(E.q) + '</div><div class="ops">';
+    '<div><span class="tes">' + (E.rot ? E.rot : E.tes ? 'Pergunta do tesouro: vale mais' : ({1: 'Fácil', 2: 'Média', 3: 'Difícil'})[E.d] || '') + '</span></div><div class="perg">' + esc(E.q) + '</div><div class="ops">';
   E.o.forEach(function (t, i) {
     var c = rev ? (i === E.cor ? ' certa' : i === minha ? ' errada' : ' apagada') : (respondi ? (i === minha ? ' minha' : ' apagada') : '');
     h += '<button class="op' + c + '" data-o="' + i + '"' + (respondi || rev ? ' disabled' : '') + '><i>' + 'ABCD'[i] + '</i><span>' + esc(t) + '</span></button>';
@@ -188,7 +188,7 @@ function desenhar(forcar) {
     return;
   }
   if (E.f === 'final') {
-    tela('<div class="meio"><p>' + esc(j.n) + ', você fez</p><div class="grande">' + mil(j.p) + '</div><p>pontos, com ' + j.c + ' de ' + E.n + ' certas em ' + (j.tt / 1000).toFixed(1).replace('.', ',') + ' s de resposta.</p>' +
+    tela('<div class="meio"><p>' + esc(j.n) + ', você fez</p><div class="grande">' + mil(j.p) + '</div><p>de 100, com ' + j.c + ' de ' + E.n + ' certas em ' + (j.tt / 1000).toFixed(1).replace('.', ',') + ' s de resposta.</p>' +
       '<p><b>' + j.pos + 'º lugar</b> no placar da feira. Seu nome está no telão.</p><button class="acao" id="dn">Liberar o telão para o próximo</button>' +
       '<p class="fraco">Obrigado por jogar! Conheça as luminárias do Cerrado no nosso estande.</p></div>');
     document.getElementById('dn').onclick = function () { enviar({t: 'r'}); };
