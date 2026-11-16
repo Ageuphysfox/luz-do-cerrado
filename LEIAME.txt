@@ -48,3 +48,5 @@ FOTOS (Wikimedia Commons)
 As paisagens das cinco paradas e as 29 fotos de animais e fenômenos têm o crédito
 mostrado no canto do telão. A lista completa aparece na tecla C e está em imagens.js
 e no começo de index.html (ETAPAS).
+Os fundos das telas de chamada dos desafios, do tesouro, do QR e do final (pasta
+fotos/ia) foram gerados por IA e aparecem com o aviso "Imagem de fundo gerada por IA".

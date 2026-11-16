@@ -287,6 +287,9 @@ var ETAPAS = [
 // cada parada tem duas rodadas: 1 fácil, 2 média, 3 difícil, 'T' pergunta do tesouro (a que vale mais),
 // 'L' desafio da lanterna, 'Z' desafio do zoom, 'M' desafio do mosaico (os três usam fotos)
 var ROTEIRO = [[1, 'L'], [1, 2], ['Z', 2], [3, 'M'], [3, 'T']];
+// cenas de clima geradas por IA (FLUX.2, via Runware): só enfeitam as telas de chamada, do QR e do final
+var IA = {};
+['L:lanterna', 'Z:zoom', 'M:mosaico', 'T:tesouro', 'entrada:entrada', 'final:final'].forEach(function (x) { x = x.split(':'); IA[x[0]] = {foto: 'fotos/ia/' + x[1] + '.jpg', ia: true}; });
 var NIVEL = {1: 'Fácil', 2: 'Média', 3: 'Difícil'};
 var DESAFIO = {
   L: {nome: 'Desafio da lanterna', bl: 'Tem alguma coisa no escuro. Quem reconhecer primeiro ganha mais pontos.', q: 'O que a lanterna está iluminando?'},
@@ -376,7 +379,7 @@ function abrirLista() {
   $('lista').innerHTML = h; $('lista').classList.add('on');
 }
 function abrirCreditos() {
-  var h = '<h2>Créditos das fotos</h2><p>Todas as fotos vêm do Wikimedia Commons. C ou Esc fecha.</p><div class="cr">';
+  var h = '<h2>Créditos das fotos</h2><p>Todas as fotos vêm do Wikimedia Commons. Os fundos das telas de chamada, do QR e do final foram gerados por IA. C ou Esc fecha.</p><div class="cr">';
   ETAPAS.forEach(function (e) { h += esc(e.nome) + ': ' + esc(e.cred) + '<br>'; });
   Object.keys(IMG).forEach(function (k) { h += esc(IMG[k].nome) + ': ' + esc(IMG[k].cred) + '<br>'; });
   $('lista').innerHTML = h + '</div>'; $('lista').classList.add('on');
@@ -502,7 +505,7 @@ function novoJog(id, nome) { return {id: id, n: nome, p: 0, a: -1, ta: 0, g: 0, 
 function irAbertura() { S.fase = 'abertura'; S.slots = [null, null]; S.k = -1; S.fila = []; S.demo = null; PAL = null; S.demoEm = Date.now() + 9000; desenhar(); publicar(); }
 function irEntrada(modo) {
   bip(520, .12, 'triangle', .1);
-  S.demo = null; PAL = null; S.modo = modo; S.slots = [null, null]; S.fase = 'entrada'; S.ate = Date.now() + 120000; S.meus = []; desenhar(); publicar();
+  S.demo = null; PAL = null; S.modo = modo; S.slots = [null, null]; S.fase = 'entrada'; S.ate = Date.now() + 120000; S.meus = []; fundo(IA.entrada); desenhar(); publicar();
 }
 function checarEntrada() {
   if (S.fase === 'entrada' && vagas().every(Boolean)) setTimeout(function () {
@@ -524,7 +527,7 @@ function proximoAviso() {
   S.inter = S.ints.shift();
   if (!S.inter) return abrirPergunta();
   S.fase = 'etapa'; PAL = null;
-  if (S.inter.des) { S.ate = Date.now() + T_DES; somChamada(); clarao(); }
+  if (S.inter.des) { S.ate = Date.now() + T_DES; fundo(IA[S.inter.des]); somChamada(); clarao(); }
   else { S.ate = Date.now() + T_ETAPA; fundo(ETAPAS[S.inter.etapa]); bip(392, .5, 'sine', .1); bip(587, .7, 'sine', .1, .25); }
   desenhar(); publicar();
 }
@@ -575,7 +578,7 @@ function terminar() {
   vagas().forEach(function (j, i) { var q = agora + i; S.meus.push(q); j.q = q; p.push({n: j.n, p: j.p, c: j.c, t: j.tt, q: q}); });
   ordenar(p); gravarPlacar(p);
   vagas().forEach(function (j) { j.pos = p.findIndex(function (x) { return x.q === j.q; }) + 1; });
-  S.fase = 'final'; PAL = null; S.ate = Date.now() + 45000; fundo(ETAPAS[3]); somRufo(1900); setTimeout(function () { if (S.fase === 'final') { somFim(); confete(170); clarao(); } }, RAP ? 100 : 2200);
+  S.fase = 'final'; PAL = null; S.ate = Date.now() + 45000; fundo(IA.final); somRufo(1900); setTimeout(function () { if (S.fase === 'final') { somFim(); confete(170); clarao(); } }, RAP ? 100 : 2200);
   desenhar(); publicar();
   document.querySelectorAll('.res .pts').forEach(function (el, i) { contar(el, 0, vagas()[i].p, RAP ? 100 : 2000); });
 }
@@ -618,7 +621,7 @@ setInterval(function () {
 
 /* ================= desenho ================= */
 var bgAtual = 0, fotoAtual = '';
-function creditar(f) { $('credito').textContent = (f.nome ? f.nome + '. ' : '') + 'Foto: ' + f.cred + ', via Wikimedia Commons'; }
+function creditar(f) { $('credito').textContent = f.ia ? 'Imagem de fundo gerada por IA' : (f.nome ? f.nome + '. ' : '') + 'Foto: ' + f.cred + ', via Wikimedia Commons'; }
 function fundo(f) {
   creditar(f);
   if (f.foto === fotoAtual) return; fotoAtual = f.foto;
@@ -689,8 +692,8 @@ function quantosCairam() { var fr = Math.min(1, (Date.now() - PAL.t0) / PAL.dur)
 var ultCh = '';
 function desenhar() {
   var h = '', a = atual(), f = S.fase, i, j;
-  document.body.classList.toggle('mural', f === 'abertura' || f === 'entrada' || f === 'contagem');
-  document.body.classList.toggle('forte', f === 'entrada' || f === 'final' || f === 'contagem' || (f === 'abertura' && !!S.demo) || (f === 'etapa' && !!S.inter.des));
+  document.body.classList.toggle('mural', f === 'abertura');
+  document.body.classList.toggle('forte', f === 'entrada' || f === 'contagem' || (f === 'abertura' && !!S.demo) || (f === 'etapa' && !!S.inter.des));
   document.body.classList.toggle('rev', f === 'resposta' && S.rev === 2 && !a.it.foto);
   var ch = [f, S.k, S.rev, S.conta, S.demo ? S.demo.f[0] + S.demo.rev : '', S.inter && (S.inter.des || S.inter.etapa)].join('|');
   $('tela').classList.toggle('entra', ch !== ultCh); ultCh = ch;
@@ -702,7 +705,7 @@ function desenhar() {
              : '<div class="perg sombra">' + esc(DESAFIO[d.tipo].q) + '</div><p class="chamada sombra">Fale alto antes do tempo acabar!</p>' + relogio(12)) +
       '<div class="modos peq"><button class="modo" data-m="1">Jogar valendo<small>tecla 1</small></button><button class="modo b" data-m="2">Jogar em dupla<small>tecla 2</small></button></div></div></div>';
   } else if (f === 'abertura') {
-    creditar({cred: 'créditos na tecla C'});
+    creditar({cred: 'créditos na tecla C'}); fotoAtual = '';
     h = '<div class="abertura"><div><h1 class="titulo sombra">Luz do<span>Cerrado</span></h1>' +
       '<p class="chamada sombra">Perguntas e desafios de foto sobre o Tocantins, o Cerrado e a luz. Responda pelo celular: a nota vai de 0 a 100 e a rapidez também conta.</p>' +
       '<div class="modos"><button class="modo" data-m="1">Jogar sozinho<small>tecla 1</small></button><button class="modo b" data-m="2">Jogar em dupla<small>tecla 2</small></button></div>' + plateiaHtml('Só quer assistir? Entre na plateia e responda junto') + '</div>' +
@@ -876,7 +879,7 @@ setInterval(attPlateia, 1000);
   $('mural').innerHTML = h;
 })();
 
-ETAPAS.forEach(function (e) { new Image().src = e.foto; });   // deixa as fotos carregadas
+ETAPAS.forEach(function (e) { new Image().src = e.foto; }); Object.keys(IA).forEach(function (k) { new Image().src = IA[k].foto; });   // deixa as fotos carregadas
 FOTOS.forEach(function (f) { if (IMG[f[0]]) new Image().src = IMG[f[0]].foto; });
 irAbertura(); rede(); conectar(0);
 </script>
