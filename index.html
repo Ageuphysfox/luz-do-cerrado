@@ -271,7 +271,7 @@ var CFG = {
   PARTE_RAPIDEZ: 0.4,        // 40% do valor da rodada depende da rapidez; os outros 60% são do acerto
   FOLGA: 3,                  // segundos iniciais em que a rapidez ainda vale tudo (tempo de ler a pergunta)
   PLACAR_NA_TELA: 8,         // quantos nomes aparecem no placar da abertura
-  RELAMPAGO: true,           // na abertura, roda sozinho um "desafio relâmpago" para quem está passando
+  RELAMPAGO: false,          // na abertura, roda sozinho um "desafio relâmpago" para quem está passando
   RELAMPAGO_PAUSA: 14        // segundos entre um desafio relâmpago e outro
 };
 var BROKERS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
@@ -350,7 +350,7 @@ function somRufo(ms) { for (var t = 0; t < ms / 1000; t += .07) bip(150 + t * 60
 function somChamada() { [392, 523, 659, 784].forEach(function (f, i) { bip(f, .22, 'square', .05, i * .09); }); }
 
 /* ================= placar (fica guardado neste navegador) ================= */
-var CHAVE = 'luzcerrado_placar_v2';
+var CHAVE = 'luzcerrado_placar_v3';   // trocar o número zera o placar
 function lerPlacar() { try { return JSON.parse(localStorage.getItem(CHAVE)) || []; } catch (e) { return []; } }
 function gravarPlacar(p) { try { localStorage.setItem(CHAVE, JSON.stringify(p)); } catch (e) {} }
 function ordenar(p) { return p.sort(function (a, b) { return b.p - a.p || a.t - b.t || a.q - b.q; }); }
@@ -703,7 +703,7 @@ function desenhar() {
   } else if (f === 'abertura') {
     creditar({cred: 'créditos na tecla C'}); fotoAtual = '';
     h = '<div class="abertura"><div><h1 class="titulo sombra">Luz do<span>Cerrado</span></h1>' +
-      '<p class="chamada sombra">Perguntas e desafios de foto sobre o Tocantins, o Cerrado e a luz. Responda pelo celular: a nota vai de 0 a 100 e a rapidez também conta.</p>' +
+      '<p class="chamada sombra">Perguntas e desafios de foto sobre o Tocantins e o Cerrado. Responda pelo celular: a nota vai de 0 a 100 e a rapidez também conta.</p>' +
       '<div class="modos"><button class="modo" data-m="1">Jogar sozinho<small>tecla 1</small></button><button class="modo b" data-m="2">Jogar em dupla<small>tecla 2</small></button></div>' + plateiaHtml('Só quer assistir? Entre na plateia e responda junto') + '</div>' +
       htmlPlacar(null, CFG.PLACAR_NA_TELA) + '</div>';
   } else if (f === 'entrada') {

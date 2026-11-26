@@ -8,9 +8,7 @@ COMO ABRIR NA FEIRA
 4. O visitante aponta a câmera, escreve o nome e responde pelo celular.
 
 O TELÃO É O ESPETÁCULO
-Enquanto ninguém joga, o telão mostra um mural de fotos em movimento e, de tempos
-em tempos, um "desafio relâmpago": uma foto escondida (lanterna, zoom ou mosaico)
-para quem está passando adivinhar em voz alta. Chame o público para tentar!
+Enquanto ninguém joga, o telão mostra um mural de fotos em movimento.
 Cada partida tem 10 rodadas: 6 perguntas, 3 desafios de foto e a pergunta do tesouro.
 Plateia pelo celular é opcional: a tecla P mostra ou esconde o QR pequeno da plateia.
 
