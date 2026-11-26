@@ -236,6 +236,8 @@ body.rev #veu { background: linear-gradient(180deg, rgba(21,16,10,.4) 0%, rgba(2
 #lista .lin { cursor: pointer; max-width: 60rem; }
 #lista .lin:hover { background: rgba(217,81,47,.3); }
 #lista .cr { font-size: 1.25rem; line-height: 1.6; columns: 2; }
+#zerar { position: fixed; top: .4rem; right: .5rem; z-index: 60; font: 600 .7rem/1 system-ui, sans-serif; padding: .3rem .55rem; border-radius: .4rem; border: 1px solid rgba(255,255,255,.18); background: rgba(0,0,0,.25); color: rgba(255,255,255,.35); cursor: pointer; }
+#zerar:hover { color: #fff; background: rgba(217,81,47,.85); border-color: transparent; }
 @media (prefers-reduced-motion: reduce) { .bg, .fita { animation: none; } }
 </style>
 </head>
@@ -252,6 +254,7 @@ body.rev #veu { background: linear-gradient(180deg, rgba(21,16,10,.4) 0%, rgba(2
 <div id="fx"></div>
 <div id="clarao"></div>
 <div id="lista"></div>
+<button id="zerar" title="Apagar todos os nomes do placar">zerar placar</button>
 
 <script src="mqtt.min.js"></script>
 <script src="qrcode.min.js"></script>
@@ -380,6 +383,11 @@ function abrirCreditos() {
   Object.keys(IMG).forEach(function (k) { h += esc(IMG[k].nome) + ': ' + esc(IMG[k].cred) + '<br>'; });
   $('lista').innerHTML = h + '</div>'; $('lista').classList.add('on');
 }
+$('zerar').addEventListener('click', function () {
+  this.blur();
+  if (!lerPlacar().length) { alert('O placar já está vazio.'); return; }
+  if (confirm('Zerar o placar? Todos os nomes e notas serão apagados. Não dá para desfazer.')) { gravarPlacar([]); if ($('lista').classList.contains('on')) abrirLista(); if (S.fase === 'abertura') desenhar(); }
+});
 $('lista').addEventListener('click', function (ev) {
   var l = ev.target.closest('.lin'); if (!l) return;
   var q = +l.dataset.q, p = lerPlacar(), x = p.find(function (y) { return y.q === q; });
